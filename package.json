@@ -2,33 +2,18 @@
   "name": "nr-pipeline-ext",
   "version": "0.0.1",
   "description": "Natural Resource (IIT) Module/Extension for pipeline-cli",
-  "engines": {
-    "node": ">=10"
-  },
-  "engineStrict": true,
   "main": "index.js",
   "scripts": {
-    "test": "mocha test/**/**.test.js",
-    "coverage": "nyc --reporter=html mocha --reporter mochawesome test/**/**.test.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/BCDevOps/nr-pipeline-ext.git"
   },
-  "author": "Clecio Varjao",
-  "license": "Apache-2.0",
+  "author": "",
+  "license": "apache",
   "bugs": {
     "url": "https://github.com/BCDevOps/nr-pipeline-ext/issues"
   },
-  "homepage": "https://github.com/BCDevOps/nr-pipeline-ext#readme",
-  "devDependencies": {
-    "expect": "^24.8.0",
-    "mocha": "^6.1.4",
-    "mochawesome": "^4.0.1",
-    "nyc": "^14.1.1",
-    "sinon": "^7.3.2"
-  },
-  "dependencies": {
-    "jira-connector": "^2.15.6"
-  }
+  "homepage": "https://github.com/BCDevOps/nr-pipeline-ext#readme"
 }
