@@ -24,6 +24,7 @@
     "jira-connector": "git+https://github.com/floralvikings/jira-connector.git",
     "jsdoc": "git+https://github.com/jsdoc/jsdoc.git",
     "nr-pipeline-ext": "git+https://github.com/BCDevOps/nr-pipeline-ext.git#release/0.0.1",
-    "pipeline-cli": "git+https://github.com/BCDevOps/pipeline-cli.git#release/v1.1"
+    "pipeline-cli": "git+https://github.com/BCDevOps/pipeline-cli.git#release/v1.1",
+    "liquibase": "git+https://github.com/pablodenadai/node-liquibase.git"
   }
 }
