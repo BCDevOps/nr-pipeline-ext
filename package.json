@@ -3,17 +3,27 @@
   "version": "0.0.1",
   "description": "Natural Resource (IIT) Module/Extension for pipeline-cli",
   "main": "index.js",
+  "engines": {
+    "node": ">=8"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "jira-update": "node jira-update.js",
+    "jira-transition": "node jira-transition.js",
+    "version": "echo \"node@$(node --version) ($(which node))\" && echo \"npm@$(npm --version) ($(which npm))\" && npm ls"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/BCDevOps/nr-pipeline-ext.git"
   },
   "author": "",
-  "license": "apache",
+  "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/BCDevOps/nr-pipeline-ext/issues"
   },
-  "homepage": "https://github.com/BCDevOps/nr-pipeline-ext#readme"
+  "dependencies": {
+    "jira-connector": "git+https://github.com/floralvikings/jira-connector.git",
+    "jsdoc": "git+https://github.com/jsdoc/jsdoc.git",
+    "nr-pipeline-ext": "git+https://github.com/BCDevOps/nr-pipeline-ext.git#release/0.0.1",
+    "pipeline-cli": "git+https://github.com/BCDevOps/pipeline-cli.git#release/v1.1"
+  }
 }
