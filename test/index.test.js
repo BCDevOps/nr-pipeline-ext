@@ -54,7 +54,7 @@ describe("JIRA - Create RFD logic", function() {
       expect(issue).toHaveProperty("fields");
       expect(issue).toHaveProperty("fields.status.name");
    });
-   it("Jira - initializeJiraComponent", async function() {
+   it("Jira - initializeProjectComponent", async function() {
       var stub = sandbox.stub(jira, "getJiraClient");
       stub.returns({
          project: {
@@ -68,6 +68,6 @@ describe("JIRA - Create RFD logic", function() {
             }
          }
       });
-      const issue = await jira.initializeJiraComponent("FAKE", "fake-db");
+      const issue = await jira.initializeProjectComponent("FAKE", "fake-db");
    });
 }); //end describe
