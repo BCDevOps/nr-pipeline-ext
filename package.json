@@ -2,6 +2,9 @@
    "name": "nr-pipeline-ext",
    "version": "0.0.1",
    "description": "Natural Resource (IIT) Module/Extension for pipeline-cli",
+   "engines": {
+      "node": ">=8"
+   },
    "main": "index.js",
    "scripts": {
       "test": "mocha"
@@ -11,13 +14,14 @@
       "url": "git+https://github.com/BCDevOps/nr-pipeline-ext.git"
    },
    "author": "",
-   "license": "apache",
+   "license": "Apache-2.0",
    "bugs": {
       "url": "https://github.com/BCDevOps/nr-pipeline-ext/issues"
    },
    "homepage": "https://github.com/BCDevOps/nr-pipeline-ext#readme",
    "dependencies": {
-      "jira-connector": "^2.16.1"
+      "jira-connector": "^2.16.1",
+      "liquibase": "0.0.3"
    },
    "devDependencies": {
       "mocha": "^6.2.0",
