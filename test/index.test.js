@@ -28,6 +28,15 @@ afterEach("Completely restore all fakes created through the sandbox", function()
    sandbox.restore();
 });
 
+describe("retrieveRfcIssueInfo(): wrapper function to retrieve RFC issue", function() {
+   context("With no argument", function() {
+      it("should throw error", async function() {
+         const issue = await jira.retrieveRfcIssueInfo(null);
+         expect(issue).toEqual(new Error("Missing 'rfcIssueKey' argument"));
+      });
+   });
+});
+
 describe("JIRA - Create RFD logic", function() {
    this.timeout(10000);
 
