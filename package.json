@@ -24,6 +24,7 @@
       "liquibase": "0.0.3"
    },
    "devDependencies": {
+      "expect": "^24.9.0",
       "mocha": "^6.2.0",
       "sinon": "^7.4.1"
    }
