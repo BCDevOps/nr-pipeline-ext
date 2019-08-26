@@ -7,8 +7,6 @@
     "node": ">=8"
   },
   "scripts": {
-    "jira-update": "node jira-update.js",
-    "jira-transition": "node jira-transition.js",
     "test": "mocha",
     "version": "echo \"node@$(node --version) ($(which node))\" && echo \"npm@$(npm --version) ($(which npm))\" && npm ls"
   },
@@ -25,7 +23,6 @@
     "jira-connector": "git+https://github.com/floralvikings/jira-connector.git",
     "liquibase": "^0.0.3",
     "moment-timezone": "^0.5.26",
-    "nr-pipeline-ext": "git+https://github.com/BCDevOps/nr-pipeline-ext.git#release/0.0.1",
     "pipeline-cli": "git+https://github.com/BCDevOps/pipeline-cli.git#release/v1.1",
     "replace-in-file": "^4.1.3"
   },
