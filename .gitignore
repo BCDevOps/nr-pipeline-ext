@@ -64,3 +64,5 @@ mochawesome-report/
 
 # testing needs
 *local*
+.vscode
+.vscode/*
