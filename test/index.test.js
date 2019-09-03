@@ -1,9 +1,11 @@
 "use strict";
 const expect = require("expect");
 
-const { Jira } = require("../index.js");
+const Jira = require('../lib/jira');
 const sinon = require("sinon");
 const sandbox = sinon.createSandbox();
+
+const CONST = require('../lib/constants');
 
 // root-level hooks below (for all test files)
 let jira = null;
@@ -31,9 +33,35 @@ afterEach("Completely restore all fakes created through the sandbox", function()
 describe("retrieveRfcIssueInfo(): wrapper function to retrieve RFC issue", function() {
    context("With no argument", function() {
       it("should throw error", async function() {
-         const issue = await jira.retrieveRfcIssueInfo(null);
-         expect(issue).toEqual(new Error("Missing 'rfcIssueKey' argument"));
+         return expect(jira.retrieveRfcIssueInfo(null)).rejects.toThrow();
       });
+   });
+
+   context("With invalid rfc number or not found", function() {
+      it("function should throw.", async function() {
+         var stub = sandbox.stub(jira, "getIssue");
+         stub.callsFake( () => {
+            throw new Error("Issue Does Not Exist")
+         });
+         return expect(jira.retrieveRfcIssueInfo('null')).rejects.toThrow()
+      })
+   });
+
+   context("With valid rfc number", function() {
+      it("function has object returns.", async function() {
+         const frcIssueKey = "fakeIssue-123";
+         var stub = sandbox.stub(jira, "getIssue");
+         stub.returns({
+            "id": "10002",
+            "self": "http://your-domain.atlassian.net/rest/api/3/issue/10002",
+            "key": frcIssueKey,
+            "fields": {}
+         });
+
+         const issue = await jira.retrieveRfcIssueInfo(frcIssueKey);
+         expect(issue).toBeDefined();
+         expect(issue.key).toBe(frcIssueKey);
+      })
    });
 });
 
@@ -79,4 +107,4 @@ describe("JIRA - Create RFD logic", function() {
       });
       const issue = await jira.initializeProjectComponent("FAKE", "fake-db");
    });
-}); //end describe
+});
