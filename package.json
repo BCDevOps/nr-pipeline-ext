@@ -25,7 +25,8 @@
       "liquibase": "0.0.3",
       "moment-timezone": "^0.5.26",
       "pipeline-cli": "git+https://github.com/BCDevOps/pipeline-cli.git#release/v1.1",
-      "replace-in-file": "^4.1.3"
+      "replace-in-file": "^4.1.3",
+      "request": "^2.88.0"
    },
    "devDependencies": {
       "expect": "^24.9.0",
