@@ -12,10 +12,10 @@ let jira = null;
 
 beforeEach("Using fake settings to create JIRA object", function() {
    const jiraSettings = {
-      url: "bwa.nrs.gov.bc.ca/int/jira",
-      username: `FAKE`,
-      password: `FAKE`,
-      rfcIssueKey: `TEST-123`,
+      url: "bwa123.nrs.gov.bc.ca/int/jira",
+      username: `fake`,
+      password: `fake`,
+      rfcIssueKey: `FAKE-123`,
       changeBranch: `FAKE-123-rfc`,
       branchName: `PR-456`,
       repoName: `FAKE`,
@@ -31,15 +31,7 @@ afterEach("Completely restore all fakes created through the sandbox", function()
 });
 
 describe("retrieveRfcIssueInfo(): wrapper function to retrieve RFC issue", function() {
-   this.timeout(10000);
    context("With no argument", function() {
-      it.only("_manageRfdAndSubtasksTransitionToInitialState", async function() {
-         await jira._manageRfdAndSubtasksTransitionToInitialState('TEST-123');
-      });
-      
-
-
-
       it("should throw error", async function() {
          return expect(jira.retrieveRfcIssueInfo(null)).rejects.toThrow();
       });
