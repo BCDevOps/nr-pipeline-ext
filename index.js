@@ -1,4 +1,4 @@
-const Jira = require('./lib/Jira')
+const Jira = require('./lib/jira')
 const Liquibase = require('./lib/Liquibase')
 const SchemaCrawler = require('./lib/SchemaCrawler')
 const CONST = require('./lib/constants')
