@@ -1,7 +1,7 @@
-const Jira = require('./lib/jira')
+const Jira = require('./lib/Jira')
 const Liquibase = require('./lib/Liquibase')
 const SchemaCrawler = require('./lib/SchemaCrawler')
-const CONST = require('./lib/constants')
+const CONST = require('./lib/Constants')
 
 const BasicJavaApplicationBuilder = require('./lib/BasicJavaApplicationBuilder')
 const BasicJavaApplicationDeployer= require('./lib/BasicJavaApplicationDeployer')
