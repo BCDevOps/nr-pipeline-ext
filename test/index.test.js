@@ -1,11 +1,9 @@
 "use strict";
 const expect = require("expect");
 
-const Jira = require('../lib/jira');
+const Jira = require('../lib/Jira');
 const sinon = require("sinon");
 const sandbox = sinon.createSandbox();
-
-const CONST = require('../lib/constants');
 
 // root-level hooks below (for all test files)
 let jira = null;
@@ -35,29 +33,6 @@ describe("retrieveRfcIssueInfo(): wrapper function to retrieve RFC issue", funct
       it("should throw error", async function() {
          return expect(jira.retrieveRfcIssueInfo(null)).rejects.toThrow();
       });
-      it.only("function should create", async function() {
-         const jiraSettings = {
-            url: "bwa.nrs.gov.bc.ca/int/jira",
-            username: `fake`,
-            password: `fake`,
-            rfcIssueKey: `SAMPLE-1383`,
-            changeBranch: `test`,
-            branchName: `PR-45`,
-            repoName: `wiof-wiof-ear`,
-            projectName: `WIOF`,
-            version: `1.0.0`
-         };
-      
-         // Create the jira object of the type Jira
-         jira = new Jira(Object.assign({}, { phase: "jira-transition", jira: jiraSettings }));
-         jira._manageRfdAndSubtasksTransitionToInitialState('SAMPLE-1518')
-         .then(result => {
-            console.log(result)
-         })
-         .catch (err => {
-            console.log(err)
-         })
-      })
    });
 
    context("With invalid rfc number or not found", function() {
