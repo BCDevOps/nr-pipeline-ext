@@ -25,4 +25,10 @@ describe("MavenRepository", function() {
          })
       })
    });
+   it("clear cache", function() {
+      const repo = new MavenRepository('https://repo1.maven.org/maven2');
+      return repo.clear().then((cacheDir)=>{
+         expect(fs.existsSync(cacheDir)).toBe(false);
+      })
+   })
 });
