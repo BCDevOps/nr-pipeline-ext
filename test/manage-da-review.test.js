@@ -46,29 +46,4 @@ describe("doSchemaLinting:", function() {
          });
       })
    });
-});
-
-describe("childProcess:", function() {
-   this.timeout(50000);
-   context("Spawn bash command operations", function() {
-      const settings = {
-               dbUrl: "fakeUrl",
-               dbUser: "fakeUser",
-               dbPassword: "fakePassword",
-               mavenCredentials: {},
-               drivers: [{groupId:'com.oracle.jdbc', artifactId: 'ojdbc8', version: '18.3.0.0'}]
-             }
-      const manageDaReview = new ManageDaReview(settings);
-
-      it("Can run 'ls' command", function() {
-         return manageDaReview.childProcess("ls")
-         .then((result) => {
-            expect(result).toBe(0);
-         });
-      });
-
-      it("With 'fake' command, it throws", async function() {
-         return expect(manageDaReview.childProcess("fakeCmd")).rejects.toThrow();
-      });
-   });
-});   
+});  
