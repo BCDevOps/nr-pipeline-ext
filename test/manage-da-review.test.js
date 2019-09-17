@@ -4,6 +4,7 @@ const sinon = require("sinon");
 const ManageDaReview = require('../lib/manage-da-review')
 const idir = require("./idir.local.json");
 
+// system test, requires credential from "./idir.local.json" (create one if not exists)
 describe("doSchemaDetail:", function() {
    this.timeout(50000);
    context("Using real correct settings", function() {
@@ -26,6 +27,7 @@ describe("doSchemaDetail:", function() {
    });
 });
 
+// system test, requires credential from "./idir.local.json" (create one if not exists)
 describe("doSchemaLinting:", function() {
    this.timeout(50000);
    context("Using real correct settings", function() {
@@ -46,4 +48,5 @@ describe("doSchemaLinting:", function() {
          });
       })
    });
-});  
+}); 
+
