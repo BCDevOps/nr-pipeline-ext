@@ -3,15 +3,16 @@ const expect = require("expect");
 const sinon = require("sinon");
 const ManageDaReview = require('../lib/manage-da-review')
 const idir = require("./idir.local.json");
+const db = require("./db.local.json");
 
-// system test, requires credential from "./idir.local.json" (create one if not exists)
+// system test, requires credential from "./idir.local.json" and "./db.local.json" (create one if not exists)
 describe("doSchemaDetail:", function() {
    this.timeout(50000);
    context("Using real correct settings", function() {
       const settings = {
-               dbUrl: "jdbc:oracle:thin:@//nrc1db01.bcgov:1521/LBTESTDB.nrs.bcgov",
-               dbUser: "CWI_TXN",
-               dbPassword: "cwi_txn",
+               dbUrl: db.CWI_TXN.dbUrl,
+               dbUser: db.CWI_TXN.dbUser,
+               dbPassword: db.CWI_TXN.dbPassword,
                mavenCredentials: idir,
                drivers: [{groupId:'com.oracle.jdbc', artifactId: 'ojdbc8', version: '18.3.0.0'}]
              }
@@ -27,14 +28,14 @@ describe("doSchemaDetail:", function() {
    });
 });
 
-// system test, requires credential from "./idir.local.json" (create one if not exists)
+// system test, requires credential from "./idir.local.json" and "./db.local.json" (create one if not exists)
 describe("doSchemaLinting:", function() {
    this.timeout(50000);
    context("Using real correct settings", function() {
       const settings = {
-               dbUrl: "jdbc:oracle:thin:@//nrc1db01.bcgov:1521/LBTESTDB.nrs.bcgov",
-               dbUser: "CWI_TXN",
-               dbPassword: "cwi_txn",
+               dbUrl: db.CWI_TXN.dbUrl,
+               dbUser: db.CWI_TXN.dbUser,
+               dbPassword: db.CWI_TXN.dbPassword,
                mavenCredentials: idir,
                drivers: [{groupId:'com.oracle.jdbc', artifactId: 'ojdbc8', version: '18.3.0.0'}]
              }
