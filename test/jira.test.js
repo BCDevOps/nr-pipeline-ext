@@ -8,9 +8,9 @@ const nock = require('nock')
 
 // root-level hooks below (for all test files)
 let jira = null;
-nock.disableNetConnect();
 
 beforeEach("Using fake settings to create JIRA object", function() {
+   nock.disableNetConnect();
    const jiraSettings = {
       url: "bwa.nrs.gov.bc.ca/int/jira",
       username: `fake`,
@@ -29,7 +29,7 @@ beforeEach("Using fake settings to create JIRA object", function() {
 });
 afterEach("Completely restore all fakes created through the sandbox", function() {
    sandbox.restore();
-   //nock.restore()
+   nock.restore();
 });
 
 describe("Jira", function() {
