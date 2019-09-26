@@ -1,6 +1,9 @@
 "use strict";
 const expect = require("expect");
-const {childProcess} = require('../lib/util-functions')
+const {childProcess, writeToFile} = require('../lib/util-functions')
+const path = require('path');
+const fs = require('fs');
+const lineByLine = require('n-readlines');
 
 describe("childProcess:", function() {
    this.timeout(50000);
@@ -8,7 +11,7 @@ describe("childProcess:", function() {
       it("Can run 'ls' command", function() {
          return childProcess("ls")
          .then((result) => {
-            expect(result).toBe(0);
+            expect(result.exitCode).toBe(0);
          });
       });
 
@@ -16,4 +19,25 @@ describe("childProcess:", function() {
          return expect(childProcess("fakeCmd")).rejects.toThrow();
       });
    });
-});   
+});
+
+describe("writeToFile:", function() {
+   this.timeout(50000);
+   const testFilePath = path.join('/tmp', 'test.txt');
+   const firstLine = "testing the first line";
+   const liner = new lineByLine(testFilePath);
+
+   it("Can write and append to file", function() {
+      const secondLine = "testing the second line";
+      const append = true;
+      writeToFile(testFilePath, `${firstLine}\n`)
+       .then(() => {
+         return writeToFile(testFilePath, secondLine, append)
+       })
+       .then(() => {
+         expect(liner.next().toString('ascii')).toBe(firstLine);
+         expect(liner.next().toString('ascii')).toBe(secondLine);      
+       })
+   });
+
+});

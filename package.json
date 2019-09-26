@@ -32,6 +32,7 @@
    "devDependencies": {
       "expect": "^24.9.0",
       "mocha": "^6.2.0",
+      "n-readlines": "^1.0.0",
       "nock": "^11.3.1",
       "sinon": "^7.4.1"
    }
