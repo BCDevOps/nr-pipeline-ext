@@ -2,9 +2,11 @@ const Jira = require('./lib/Jira')
 const Liquibase = require('./lib/Liquibase')
 const SchemaCrawler = require('./lib/SchemaCrawler')
 const CONST = require('./lib/constants')
+const InputDeployerVerify = require('./lib/InputDeployerVerify')
 
 const BasicJavaApplicationBuilder = require('./lib/BasicJavaApplicationBuilder')
 const BasicJavaApplicationDeployer= require('./lib/BasicJavaApplicationDeployer')
+
 
 module.exports = {
   Jira,
@@ -12,5 +14,6 @@ module.exports = {
   SchemaCrawler,
   CONST,
   BasicJavaApplicationBuilder,
-  BasicJavaApplicationDeployer
+  BasicJavaApplicationDeployer,
+  InputDeployerVerify
 }
