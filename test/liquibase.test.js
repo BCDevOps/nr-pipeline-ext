@@ -3,7 +3,7 @@ const expect = require("expect");
 const liquibase = require('../lib/liquibase')
 
 describe("liquibase module", function() {
-   this.timeout(50000);
+   this.timeout(1000000);
    context("On Liquibase setup", function() {
       it.only("install can be done", function() {
          const idir = require("./idir.local.json");
