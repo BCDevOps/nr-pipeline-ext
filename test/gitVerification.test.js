@@ -6,7 +6,6 @@ describe("git module", function() {
    this.timeout(50000);
    context("On running git --version", function() {
       it.only("version can be obtained", function() {
-         //const idir = require("./idir.local.json");
          const gitObj = new Git()
 
          return gitObj.run(['--version']).then(proc=>{
@@ -22,7 +21,6 @@ describe("git module", function() {
     this.timeout(50000);
     context("On running git merge-base", function() {
        it.only("commitHash can be obtained", function() {
-          //const idir = require("./idir.local.json");
           const gitObj = new Git()
  
           return gitObj.getMergeBase('release/0.0.1','master').then(commitHash=>{
@@ -37,7 +35,6 @@ describe("git module", function() {
     this.timeout(50000);
     context("On running git ls-remote", function() {
        it.only("latest commit hash on master can be obtained", function() {
-          //const idir = require("./idir.local.json");
           const gitObj = new Git()
  
           return gitObj.getLatestCommitOnMaster().then(commitHash=>{
@@ -52,7 +49,6 @@ describe("git module", function() {
     this.timeout(50000);
     context("On running verify", function() {
        it.only("verify if branches can be merged", function() {
-          //const idir = require("./idir.local.json");
           const gitObj = new Git()
  
           return gitObj.verify('release/0.0.1','master').then(result=>{
@@ -67,7 +63,6 @@ describe("git module", function() {
     this.timeout(50000);
     context("On running verify", function() {
        it.only("verify if branches can be merged", function() {
-          //const idir = require("./idir.local.json");
           const gitObj = new Git()
  
           return gitObj.verify('feature/add-backup-recovery-to-basicOracleDatabaseDeployment','release/0.0.1').then(result=>{
