@@ -62,3 +62,18 @@ describe("git module", function() {
     });
  
  });
+
+ describe("git module", function() {
+    this.timeout(50000);
+    context("On running verify", function() {
+       it.only("verify if branches can be merged", function() {
+          //const idir = require("./idir.local.json");
+          const gitObj = new Git()
+ 
+          return gitObj.verify('feature/add-backup-recovery-to-basicOracleDatabaseDeployment','release/0.0.1').then(result=>{
+             expect(result).toBe('False')
+          })
+       })
+    });
+ 
+ });

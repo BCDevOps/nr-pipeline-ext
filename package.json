@@ -7,7 +7,7 @@
    },
    "main": "index.js",
    "scripts": {
-      "test": "mocha",
+      "test": "nyc --reporter=text mocha",
       "version": "echo \"node@$(node --version) ($(which node))\" && echo \"npm@$(npm --version) ($(which npm))\" && npm ls"
    },
    "repository": {
@@ -34,6 +34,7 @@
       "expect": "^24.9.0",
       "mocha": "^6.2.2",
       "nock": "^11.7.0",
+      "nyc": "^14.1.1",
       "sinon": "^7.5.0"
    }
 }
