@@ -66,4 +66,3 @@ mochawesome-report/
 *local*
 .vscode
 .vscode/*
-*.local.json*
