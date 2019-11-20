@@ -62,12 +62,9 @@ describe("git module", function() {
  describe("git module", function() {
     this.timeout(50000);
     context("On running verify", function() {
-       it.only("verify if branches can be merged", function() {
+       it.only("verify if branches can be merged", async function() {
           const gitObj = new Git()
- 
-          return gitObj.verify('feature/add-backup-recovery-to-basicOracleDatabaseDeployment','release/0.0.1').then(result=>{
-             expect(result).toBe('False')
-          })
+            return expect(gitObj.verify('feature/add-backup-recovery-to-basicOracleDatabaseDeployment','release/0.0.1')).rejects.toThrow()
        })
     });
  
