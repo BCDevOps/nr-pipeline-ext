@@ -1,6 +1,5 @@
 "use strict";
 const expect = require("expect");
-const assert = require("assert");
 var sandbox = require('sinon').createSandbox();
 const {OpenShiftClientX} = require('pipeline-cli');
 const Jira = require('../lib/Jira');
@@ -104,8 +103,16 @@ describe("BasicJavaApplication:", function() {
     });
   });
    
-  it.skip("Throw error, when no target branch defined from calling this module...", function() {
-
+  it("Throw error, when no target branch defined from calling this module...", async function() {
+    // Arrange
+    const settingsStub = getDefaultSettings();
+    settingsStub.options.git.change.target = undefined;
+    const builder = new BasicJavaApplicationBuilder(settingsStub);
+    const processedTemplateStub = {processTemplates:"myTemplate"};
+    sandbox.stub(builder, 'processTemplates').callsFake(() => processedTemplateStub);
+      
+    // Act
+    return expect(builder.build()).rejects.toThrow();
   });
 
   function getDefaultSettings() {
