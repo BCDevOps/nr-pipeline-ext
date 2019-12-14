@@ -120,12 +120,12 @@ describe("BasicJavaApplication:", function() {
       "phases": {
         "build": {
           "namespace": "wp9gel-tools",
-          "changeId": "99",
-          "instance": "siwe-build-99",
+          "changeId": "9999",
+          "instance": "siwe-build-9999",
           "credentials": {
             "idir": {
-              "user": "NRCDA001@gov.bc.ca",
-              "pass": "b8ufIzsz2oHWxZ"
+              "user": "stub@gov.bc.ca",
+              "pass": "stub"
             }
           }
         },
@@ -133,18 +133,17 @@ describe("BasicJavaApplication:", function() {
       "options": {
         "git": {
           "branch": {
-            "name": "feature/ZERO-1103-add-ha-capability",
-            "merge": "feature/ZERO-1103-add-ha-capability",
-            "remote": "feature/ZERO-1103-add-ha-capability"
+            "name": "feature/ZERO-9999-my-branch",
+            "merge": "feature/ZERO-9999-my-branch",
+            "remote": "feature/ZERO-9999-my-branch"
           },
           "url": "https://bwa.nrs.gov.bc.ca/int/stash/scm/siwe/siwe-siwe-ear.git",
           "change": {
-            "target": "SIWE-73-test-siwe-pipeline-deployment"
+            "target": "RFC-999-test"
           }
         },
         "env": "build",
-        "pr": "99",
-        "cwd": "/Users/iliu/Workspace/Repo/spi/spi-siwe-ear"
+        "pr": "9999"
       },
       "jiraUrl": "bwa.nrs.gov.bc.ca/int/jira",
       "bitbucketUrl": "https://bwa.nrs.gov.bc.ca/int/stash",
