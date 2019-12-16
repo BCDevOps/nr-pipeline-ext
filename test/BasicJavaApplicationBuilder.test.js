@@ -6,7 +6,7 @@ const Jira = require('../lib/Jira');
 const Git = require('../lib/GitVerification');
 const BasicJavaApplicationBuilder = require('../lib/BasicJavaApplicationBuilder');
 
-describe("BasicJavaApplication:", function() {
+describe("BasicJavaApplicationBuilder:", function() {
   this.timeout(50000);
 
   let ocApplyRecommendedLabelsStub;
