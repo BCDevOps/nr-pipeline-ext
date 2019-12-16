@@ -10,21 +10,21 @@ describe("BasicJavaApplicationBuilder:", function() {
   this.timeout(50000);
 
   let ocApplyRecommendedLabelsStub;
-  let ocApplyAndBuildStube;
+  let ocApplyAndBuildStub;
   let gitObjStub;
   let jiraCreateRfdStub;
 
    // stubing
   this.beforeEach(function() {
     ocApplyRecommendedLabelsStub = sandbox.stub(OpenShiftClientX.prototype, 'applyRecommendedLabels');
-    ocApplyAndBuildStube = sandbox.stub(OpenShiftClientX.prototype, 'applyAndBuild');
+    ocApplyAndBuildStub = sandbox.stub(OpenShiftClientX.prototype, 'applyAndBuild');
     gitObjStub = sandbox.stub(Git.prototype, 'verify');
     jiraCreateRfdStub = sandbox.stub(Jira.prototype, 'createRFD');
   });
 
   afterEach(function() {
     ocApplyRecommendedLabelsStub.restore();
-    ocApplyAndBuildStube.restore();
+    ocApplyAndBuildStub.restore();
     gitObjStub.restore();
     jiraCreateRfdStub.restore();
   });
@@ -61,8 +61,8 @@ describe("BasicJavaApplicationBuilder:", function() {
         settingsStub.phases[settingsStub.phase].changeId,
         settingsStub.phases[settingsStub.phase].instance
       );
-      sandbox.assert.calledOnce(ocApplyAndBuildStube);
-      sandbox.assert.calledWith(ocApplyAndBuildStube, processedTemplateStub);
+      sandbox.assert.calledOnce(ocApplyAndBuildStub);
+      sandbox.assert.calledWith(ocApplyAndBuildStub, processedTemplateStub);
     });
   });
   
@@ -98,8 +98,8 @@ describe("BasicJavaApplicationBuilder:", function() {
         settingsStub.phases[settingsStub.phase].changeId,
         settingsStub.phases[settingsStub.phase].instance
       );
-      sandbox.assert.calledOnce(ocApplyAndBuildStube);
-      sandbox.assert.calledWith(ocApplyAndBuildStube, processedTemplateStub);
+      sandbox.assert.calledOnce(ocApplyAndBuildStub);
+      sandbox.assert.calledWith(ocApplyAndBuildStub, processedTemplateStub);
     });
   });
    
