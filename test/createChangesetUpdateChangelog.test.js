@@ -46,4 +46,8 @@ describe("generate", function() {
                 expect(generate.execute('testschema','test','SAMPLE-123','create-table')).toBe(true)
                 })
             })
+<<<<<<< HEAD
         });  
+=======
+        });  
+>>>>>>> add test case
