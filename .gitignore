@@ -67,3 +67,5 @@ mochawesome-report/
 .vscode
 .vscode/*
 *.local.json*
+migrations/**
+migrations
