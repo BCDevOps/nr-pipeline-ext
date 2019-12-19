@@ -6,7 +6,7 @@ const InputDeployerVerify = require('./lib/InputDeployerVerify')
 
 const BasicJavaApplicationBuilder = require('./lib/BasicJavaApplicationBuilder')
 const BasicJavaApplicationDeployer= require('./lib/BasicJavaApplicationDeployer')
-
+const CreateChangesetUpdateChangelog= require('./lib/CreateChangesetUpdateChangelog')
 
 module.exports = {
   Jira,
@@ -15,5 +15,6 @@ module.exports = {
   CONST,
   BasicJavaApplicationBuilder,
   BasicJavaApplicationDeployer,
-  InputDeployerVerify
+  InputDeployerVerify,
+  CreateChangesetUpdateChangelog,
 }

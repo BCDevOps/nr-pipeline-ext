@@ -1,7 +1,8 @@
 "use strict";
 const expect = require('expect')
-var moment = require('moment-timezone')
-var generate = require("../lib/createChangesetUpdateChangelog")
+const moment = require('moment-timezone')
+const Generator = require("../lib/CreateChangesetUpdateChangelog")
+const generate=new Generator()
 
  describe("create Changeset", function() {
    this.timeout(50000);
@@ -46,8 +47,4 @@ describe("generate", function() {
                 expect(generate.execute('testschema','test','SAMPLE-123','create-table')).toBe(true)
                 })
             })
-<<<<<<< HEAD
         });  
-=======
-        });  
->>>>>>> add test case
