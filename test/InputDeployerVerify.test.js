@@ -1,7 +1,8 @@
 "use strict";
 const Jira = require('../lib/Jira');
 const expect = require("expect");
-var sandbox = require('sinon').createSandbox();
+const sinon = require('sinon');
+const sandbox = sinon.createSandbox();
 const {ENV, ISSUE_STATUS_NAME, ISSUE_LINK_TYPE_NAME, VERIFY_STATUS, REASON} = require("../lib/constants");
 const {previousEnv} = require("../lib/util-functions");
 const Verifier = require("../lib/InputDeployerVerify");
@@ -19,9 +20,16 @@ describe("obtainCurrentRfcRfdContext:", function() {
     });
 
     context("Function isReadyForDeployment()", function() {
-        it.only("When RFDs blockedBy others, return result: status='Not Ready' , rfcRfdContext and reasonn with code: REASON_CODE_RFD_BLOCKED", async function() {
+        it("When RFC is not found, Error throws", async function() {
+            jiraClientStub.retrieveRfcIssueInfo.resolves(undefined);
+
+            // Act
+            const verifier = new Verifier(getDefaultSettings());
+            return expect(verifier.isReadyForDeployment('dlvr', 'invalidIssueKey')).rejects.toThrow();
+        });
+
+        it("When RFDs blockedBy others, return result: status='Not Ready', rfcRfdContext and reason with code: REASON_CODE_RFD_BLOCKED", async function() {
             // Arrange
-            const rfcIssueKeyStub = 'MyRFCissue-99';
             const env = 'test';
             const settings = getDefaultSettings();
             settings.options.env = env;
@@ -33,7 +41,7 @@ describe("obtainCurrentRfcRfdContext:", function() {
 
             // Act
             const result = await verifier.isReadyForDeployment(env, rfcIssueKey);
-            console.log('result:', result);
+            // console.log('result:', JSON.stringify(result));
 
             // Verify
             sandbox.assert.calledWith(verifier.obtainCurrentRfcRfdContext, env, rfcIssueKey);
@@ -42,7 +50,173 @@ describe("obtainCurrentRfcRfdContext:", function() {
             expect(result.rfcRfdContext).toEqual(blockedByRfcRfdContext);
             expect(result.reason.code).toEqual(REASON.REASON_CODE_RFD_BLOCKED);
             expect(result.reason.issueItems.length).not.toBe(0);
+            const rfds = blockedByRfcRfdContext.rfdsByEnv.rfds.map(rfd => rfd.rfdIssueKey);
+            result.reason.issueItems.forEach(item => {
+                expect(item.status).not.toBe(ISSUE_STATUS_NAME.RESOLVED);
+                expect(rfds).toContain(item.blockingOn);
+            });
         });
+
+        it("Some of current stage RFDs are not approved, return result: status='Not Ready', rfcRfdContext and reason with code: REASON_CODE_RFD_NOT_APPROVED", async function() {
+            // Arrange
+            const env = 'test';
+            const settings = getDefaultSettings();
+            settings.options.env = env;
+            settings.phase = env;
+            const verifier = new Verifier(settings);
+            const rfdNotApprovedRfcRfdContext = {"rfcIssueKey":"MyRFCissue-99","rfcStatus":"Authorized for Test","rfdsByEnv":{"env":"test","rfds":[{"rfdIssueKey":"RFD-AUTO-TEST-01","labels":"auto","env":"test","status":"Approved","blockedBy":[{"issueKey":"INWARDISSUE-0","status":"Resolved","blockingOn":"RFD-AUTO-TEST-01"}]},{"rfdIssueKey":"RFD-BUSINESS-TEST-01","labels":"some-label","env":"test","status":"Some Other Status","blockedBy":[]}],"previousEnvRfds":[{"rfdIssueKey":"RFD-AUTO-DLVR-01","env":"dlvr","status":"Closed","labels":"auto"}]}};
+            const rfcIssueKey = rfdNotApprovedRfcRfdContext.rfcIssueKey;
+            sandbox.stub(verifier, 'obtainCurrentRfcRfdContext').resolves(rfdNotApprovedRfcRfdContext);
+
+            // Act
+            const result = await verifier.isReadyForDeployment(env, rfcIssueKey);
+            // console.log('result:', JSON.stringify(result));
+
+            // Verify
+            sandbox.assert.calledWith(verifier.obtainCurrentRfcRfdContext, env, rfcIssueKey);
+            expect(result.status).toEqual(VERIFY_STATUS.NOT_READY);
+            expect(Object.keys(result)).toEqual(expect.arrayContaining(["status", "rfcRfdContext", "reason"]));
+            expect(result.rfcRfdContext).toEqual(rfdNotApprovedRfcRfdContext);
+            expect(result.reason.code).toEqual(REASON.REASON_CODE_RFD_NOT_APPROVED);
+            expect(result.reason.issueItems.length).not.toBe(0);
+            const resultIssueItemsIssueKeys = result.reason.issueItems.map(item => item.rfdIssueKey);
+            expect(resultIssueItemsIssueKeys).toContain(rfdNotApprovedRfcRfdContext.rfdsByEnv.rfds[1].rfdIssueKey);
+            result.reason.issueItems.forEach((issueItem) => {
+                expect(issueItem.env).toEqual(env);
+                expect(issueItem.status).not.toEqual(ISSUE_STATUS_NAME.APPROVED);
+            });
+        });
+
+        it("Some of previous stage RFDs are not closed, return result: status='Not Ready', rfcRfdContext and reason with code: REASON_CODE_PREVIOUS_RFD_NOT_CLOSED", async function() {
+            // Arrange
+            const env = 'test';
+            const settings = getDefaultSettings();
+            settings.options.env = env;
+            settings.phase = env;
+            const verifier = new Verifier(settings);
+            const previousRfdNotClosedRfcRfdContext = {"rfcIssueKey":"MyRFCissue-99","rfcStatus":"Authorized for Test","rfdsByEnv":{"env":"test","rfds":[{"rfdIssueKey":"RFD-AUTO-TEST-01","labels":"auto","env":"test","status":"Approved","blockedBy":[{"issueKey":"INWARDISSUE-0","status":"Resolved","blockingOn":"RFD-AUTO-TEST-01"}]},{"rfdIssueKey":"RFD-BUSINESS-TEST-01","labels":"some-label","env":"test","status":"Approved","blockedBy":[{"issueKey":"INWARDISSUE-0","status":"Resolved","blockingOn":"RFD-BUSINESS-TEST-01"},{"issueKey":"INWARDISSUE-1","status":"Resolved","blockingOn":"RFD-BUSINESS-TEST-01"},{"issueKey":"INWARDISSUE-2","status":"Resolved","blockingOn":"RFD-BUSINESS-TEST-01"}]}],"previousEnvRfds":[{"rfdIssueKey":"RFD-AUTO-DLVR-01","env":"dlvr","status":"Approved","labels":"auto"}]}};
+            const rfcIssueKey = previousRfdNotClosedRfcRfdContext.rfcIssueKey;
+            sandbox.stub(verifier, 'obtainCurrentRfcRfdContext').resolves(previousRfdNotClosedRfcRfdContext);
+
+            // Act
+            const result = await verifier.isReadyForDeployment(env, rfcIssueKey);
+            // console.log('result:', JSON.stringify(result));
+
+            // Verify
+            sandbox.assert.calledWith(verifier.obtainCurrentRfcRfdContext, env, rfcIssueKey);
+            expect(result.status).toEqual(VERIFY_STATUS.NOT_READY);
+            expect(Object.keys(result)).toEqual(expect.arrayContaining(["status", "rfcRfdContext", "reason"]));
+            expect(result.rfcRfdContext).toEqual(previousRfdNotClosedRfcRfdContext);
+            expect(result.reason.code).toEqual(REASON.REASON_CODE_PREVIOUS_RFD_NOT_CLOSED);
+            expect(result.reason.issueItems.length).not.toBe(0);
+            const resultIssueItemsIssueKeys = result.reason.issueItems.map(item => item.rfdIssueKey);
+            expect(resultIssueItemsIssueKeys).toContain(previousRfdNotClosedRfcRfdContext.rfdsByEnv.previousEnvRfds[0].rfdIssueKey);
+            result.reason.issueItems.forEach((issueItem) => {
+                expect(issueItem.env).toEqual(previousEnv(env));
+                expect(issueItem.status).not.toEqual(ISSUE_STATUS_NAME.CLOSED);
+            });
+        });    
+
+        it("ENV=dlvr but RFC is not Authorized to Int, return result: status='Not Ready', rfcRfdContext and reason with code: REASON_CODE_RFC_NOT_AUTHORIZED", async function() {
+            // Arrange
+            const env = 'dlvr';
+            const settings = getDefaultSettings();
+            settings.options.env = env;
+            settings.phase = env;
+            const verifier = new Verifier(settings);
+            const dlvrRFCnotAuthorizedRfcRfdContext = {"rfcIssueKey":"MyRFCissue-99","rfcStatus":"In Review for Int","rfdsByEnv":{"env":"dlvr","rfds":[{"rfdIssueKey":"RFD-AUTO-DLVR-01","labels":"auto","env":"dlvr","status":"Approved","blockedBy":[{"issueKey":"INWARDISSUE-0","status":"Resolved","blockingOn":"RFD-AUTO-DLVR-01"}]}],"previousEnvRfds":[]}};
+            const rfcIssueKey = dlvrRFCnotAuthorizedRfcRfdContext.rfcIssueKey;
+            sandbox.stub(verifier, 'obtainCurrentRfcRfdContext').resolves(dlvrRFCnotAuthorizedRfcRfdContext);
+
+            // Act
+            const result = await verifier.isReadyForDeployment(env, rfcIssueKey);
+            // console.log('result:', JSON.stringify(result));
+
+            // Verify
+            sandbox.assert.calledWith(verifier.obtainCurrentRfcRfdContext, env, rfcIssueKey);
+            expect(result.status).toEqual(VERIFY_STATUS.NOT_READY);
+            expect(Object.keys(result)).toEqual(expect.arrayContaining(["status", "rfcRfdContext", "reason"]));
+            expect(result.rfcRfdContext).toEqual(dlvrRFCnotAuthorizedRfcRfdContext);
+            expect(result.reason.code).toEqual(REASON.REASON_CODE_RFC_NOT_AUTHORIZED);
+            expect(result.reason.issueItems.length).not.toBe(0);
+            expect(result.reason.issueItems.rfcIssueKey).toEqual(rfcIssueKey);
+            expect(result.reason.issueItems.rfcStatus).not.toEqual(ISSUE_STATUS_NAME.AUTHORIZEDFORINT);
+        });    
+
+        it("ENV=test but RFC is not Authorized to Test, return result: status='Not Ready', rfcRfdContext and reason with code: REASON_CODE_RFC_NOT_AUTHORIZED", async function() {
+            // Arrange
+            const env = 'test';
+            const settings = getDefaultSettings();
+            settings.options.env = env;
+            settings.phase = env;
+            const verifier = new Verifier(settings);
+            const testRFCnotAuthorizedRfcRfdContext = {"rfcIssueKey":"MyRFCissue-99","rfcStatus":"In Review for Test","rfdsByEnv":{"env":"test","rfds":[{"rfdIssueKey":"RFD-AUTO-TEST-01","labels":"auto","env":"test","status":"Approved","blockedBy":[{"issueKey":"INWARDISSUE-0","status":"Resolved","blockingOn":"RFD-AUTO-TEST-01"}]},{"rfdIssueKey":"RFD-BUSINESS-TEST-01","labels":"some-label","env":"test","status":"Approved","blockedBy":[{"issueKey":"INWARDISSUE-0","status":"Resolved","blockingOn":"RFD-BUSINESS-TEST-01"},{"issueKey":"INWARDISSUE-1","status":"Resolved","blockingOn":"RFD-BUSINESS-TEST-01"},{"issueKey":"INWARDISSUE-2","status":"Resolved","blockingOn":"RFD-BUSINESS-TEST-01"}]}],"previousEnvRfds":[{"rfdIssueKey":"RFD-AUTO-DLVR-01","env":"dlvr","status":"Closed","labels":"auto"}]}};
+            const rfcIssueKey = testRFCnotAuthorizedRfcRfdContext.rfcIssueKey;
+            sandbox.stub(verifier, 'obtainCurrentRfcRfdContext').resolves(testRFCnotAuthorizedRfcRfdContext);
+
+            // Act
+            const result = await verifier.isReadyForDeployment(env, rfcIssueKey);
+            // console.log('result:', JSON.stringify(result));
+
+            // Verify
+            sandbox.assert.calledWith(verifier.obtainCurrentRfcRfdContext, env, rfcIssueKey);
+            expect(result.status).toEqual(VERIFY_STATUS.NOT_READY);
+            expect(Object.keys(result)).toEqual(expect.arrayContaining(["status", "rfcRfdContext", "reason"]));
+            expect(result.rfcRfdContext).toEqual(testRFCnotAuthorizedRfcRfdContext);
+            expect(result.reason.code).toEqual(REASON.REASON_CODE_RFC_NOT_AUTHORIZED);
+            expect(result.reason.issueItems.length).not.toBe(0);
+            expect(result.reason.issueItems.rfcIssueKey).toEqual(rfcIssueKey);
+            expect(result.reason.issueItems.rfcStatus).not.toEqual(ISSUE_STATUS_NAME.AUTHORIZEDFORTEST);
+        }); 
+
+        it("ENV=prod but RFC is not Authorized to Prod, return result: status='Not Ready', rfcRfdContext and reason with code: REASON_CODE_RFC_NOT_AUTHORIZED", async function() {
+            // Arrange
+            const env = 'prod';
+            const settings = getDefaultSettings();
+            settings.options.env = env;
+            settings.phase = env;
+            const verifier = new Verifier(settings);
+            const prodRFCnotAuthorizedRfcRfdContext = {"rfcIssueKey":"MyRFCissue-99","rfcStatus":"In Review for Prod","rfdsByEnv":{"env":"prod","rfds":[{"rfdIssueKey":"RFD-AUTO-PROD-01","labels":"auto","env":"prod","status":"Approved","blockedBy":[]}],"previousEnvRfds":[{"rfdIssueKey":"RFD-AUTO-TEST-01","env":"test","status":"Closed","labels":"auto"}]}};
+            const rfcIssueKey = prodRFCnotAuthorizedRfcRfdContext.rfcIssueKey;
+            sandbox.stub(verifier, 'obtainCurrentRfcRfdContext').resolves(prodRFCnotAuthorizedRfcRfdContext);
+
+            // Act
+            const result = await verifier.isReadyForDeployment(env, rfcIssueKey);
+            // console.log('result:', JSON.stringify(result));
+
+            // Verify
+            sandbox.assert.calledWith(verifier.obtainCurrentRfcRfdContext, env, rfcIssueKey);
+            expect(result.status).toEqual(VERIFY_STATUS.NOT_READY);
+            expect(Object.keys(result)).toEqual(expect.arrayContaining(["status", "rfcRfdContext", "reason"]));
+            expect(result.rfcRfdContext).toEqual(prodRFCnotAuthorizedRfcRfdContext);
+            expect(result.reason.code).toEqual(REASON.REASON_CODE_RFC_NOT_AUTHORIZED);
+            expect(result.reason.issueItems.length).not.toBe(0);
+            expect(result.reason.issueItems.rfcIssueKey).toEqual(rfcIssueKey);
+            expect(result.reason.issueItems.rfcStatus).not.toEqual(ISSUE_STATUS_NAME.AUTHORIZEDFORPROD);
+            expect(result.reason.issueItems.rfdsByEnv.previousEnvRfds[0].env).toEqual(previousEnv(env));
+        }); 
+
+        it("When all conditions passed verification, return result: status='Ready' and rfcRfdContext", async function() {
+            // Arrange
+            const env = 'test';
+            const settings = getDefaultSettings();
+            settings.options.env = env;
+            settings.phase = env;
+            const verifier = new Verifier(settings);
+            const testAllVerifiedRfcRfdContext = {"rfcIssueKey":"MyRFCissue-99","rfcStatus":"Authorized for Test","rfdsByEnv":{"env":"test","rfds":[{"rfdIssueKey":"RFD-AUTO-TEST-01","labels":"auto","env":"test","status":"Approved","blockedBy":[{"issueKey":"INWARDISSUE-0","status":"Resolved","blockingOn":"RFD-AUTO-TEST-01"}]},{"rfdIssueKey":"RFD-BUSINESS-TEST-01","labels":"some-label","env":"test","status":"Approved","blockedBy":[{"issueKey":"INWARDISSUE-0","status":"Resolved","blockingOn":"RFD-BUSINESS-TEST-01"},{"issueKey":"INWARDISSUE-1","status":"Resolved","blockingOn":"RFD-BUSINESS-TEST-01"},{"issueKey":"INWARDISSUE-2","status":"Resolved","blockingOn":"RFD-BUSINESS-TEST-01"}]}],"previousEnvRfds":[{"rfdIssueKey":"RFD-AUTO-DLVR-01","env":"dlvr","status":"Closed","labels":"auto"}]}};
+            const rfcIssueKey = testAllVerifiedRfcRfdContext.rfcIssueKey;
+            sandbox.stub(verifier, 'obtainCurrentRfcRfdContext').resolves(testAllVerifiedRfcRfdContext);
+
+            // Act
+            const result = await verifier.isReadyForDeployment(env, rfcIssueKey);
+            // console.log('result:', JSON.stringify(result));
+
+            // Verify
+            sandbox.assert.calledWith(verifier.obtainCurrentRfcRfdContext, env, rfcIssueKey);
+            expect(result.status).toEqual(VERIFY_STATUS.READY);
+            expect(Object.keys(result)).toEqual(expect.arrayContaining(["status", "rfcRfdContext"]));
+            expect(result.rfcRfdContext).toEqual(testAllVerifiedRfcRfdContext);
+        }); 
     })
 
     context("Function obtainCurrentRfcRfdContext()", function() {
@@ -61,7 +235,8 @@ describe("obtainCurrentRfcRfdContext:", function() {
             const dlvrEnv = 'dlvr';
             const dlvrVerifier = new Verifier(getDefaultSettings());
             const dlvrRfcRfdContext = await dlvrVerifier.obtainCurrentRfcRfdContext(dlvrEnv, rfcIssueKeyStub);
-    
+            // console.log('dlvrRfcRfdContext', JSON.stringify(dlvrRfcRfdContext));
+
             // Verify
             sandbox.assert.calledOnce(jiraClientStub.retrieveRfcIssueInfo);
             sandbox.assert.calledWith(jiraClientStub.retrieveRfcIssueInfo, rfcIssueKeyStub);
@@ -122,6 +297,14 @@ describe("obtainCurrentRfcRfdContext:", function() {
             });
             expect(testRfcRfdContext.rfdsByEnv.previousEnvRfds).toBeInstanceOf(Array);
             expect(testRfcRfdContext.rfdsByEnv.previousEnvRfds.every(p => p.env == previousEnv(testEnv))).toBe(true);
+        });
+
+        it("When RFC is not found, Error throws", async function() {
+            jiraClientStub.retrieveRfcIssueInfo.resolves(undefined);
+
+            // Act
+            const verifier = new Verifier(getDefaultSettings());
+            return expect(verifier.obtainCurrentRfcRfdContext('dlvr', 'invalidIssueKey')).rejects.toThrow();
         });
     })
 
