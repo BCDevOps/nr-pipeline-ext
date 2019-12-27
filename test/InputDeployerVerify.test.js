@@ -35,7 +35,7 @@ describe("obtainCurrentRfcRfdContext:", function() {
             settings.options.env = env;
             settings.phase = env;
             const verifier = new Verifier(settings);
-            const blockedByRfcRfdContext = {"rfcIssueKey":"MyRFCissue-99","rfcStatus":"Authorized for Test","rfdsByEnv":{"env":"test","rfds":[{"rfdIssueKey":"RFD-AUTO-TEST-01","labels":"auto","env":"test","status":"Approved","blockedBy":[{"issueKey":"INWARDISSUE-0","status":"Some Other Status","blockingOn":"RFD-AUTO-TEST-01"}]},{"rfdIssueKey":"RFD-BUSINESS-TEST-01","labels":"some-label","env":"test","status":"Some Other Status","blockedBy":[]}],"previousEnvRfds":[{"rfdIssueKey":"RFD-AUTO-DLVR-01","env":"dlvr","status":"Closed","labels":"auto"}]}};
+            const blockedByRfcRfdContext = {"rfcIssueKey":"MyRFCissue-99","rfcStatus":"Authorized for Test","rfdsByEnv":{"test": {"rfds":[{"rfdIssueKey":"RFD-AUTO-TEST-01","labels":"auto","env":"test","status":"Approved","blockedBy":[{"issueKey":"INWARDISSUE-0","status":"Some Other Status","blockingOn":"RFD-AUTO-TEST-01"}]},{"rfdIssueKey":"RFD-BUSINESS-TEST-01","labels":"some-label","env":"test","status":"Some Other Status","blockedBy":[]}],"previousEnvRfds":[{"rfdIssueKey":"RFD-AUTO-DLVR-01","env":"dlvr","status":"Closed","labels":"auto"}]}}};
             const rfcIssueKey = blockedByRfcRfdContext.rfcIssueKey;
             sandbox.stub(verifier, 'obtainCurrentRfcRfdContext').returns(Promise.resolve(blockedByRfcRfdContext));
 
@@ -50,7 +50,7 @@ describe("obtainCurrentRfcRfdContext:", function() {
             expect(result.rfcRfdContext).toEqual(blockedByRfcRfdContext);
             expect(result.reason.code).toEqual(REASON.REASON_CODE_RFD_BLOCKED);
             expect(result.reason.issueItems.length).not.toBe(0);
-            const rfds = blockedByRfcRfdContext.rfdsByEnv.rfds.map(rfd => rfd.rfdIssueKey);
+            const rfds = blockedByRfcRfdContext.rfdsByEnv[env].rfds.map(rfd => rfd.rfdIssueKey);
             result.reason.issueItems.forEach(item => {
                 expect(item.status).not.toBe(ISSUE_STATUS_NAME.RESOLVED);
                 expect(rfds).toContain(item.blockingOn);
@@ -64,7 +64,7 @@ describe("obtainCurrentRfcRfdContext:", function() {
             settings.options.env = env;
             settings.phase = env;
             const verifier = new Verifier(settings);
-            const rfdNotApprovedRfcRfdContext = {"rfcIssueKey":"MyRFCissue-99","rfcStatus":"Authorized for Test","rfdsByEnv":{"env":"test","rfds":[{"rfdIssueKey":"RFD-AUTO-TEST-01","labels":"auto","env":"test","status":"Approved","blockedBy":[{"issueKey":"INWARDISSUE-0","status":"Resolved","blockingOn":"RFD-AUTO-TEST-01"}]},{"rfdIssueKey":"RFD-BUSINESS-TEST-01","labels":"some-label","env":"test","status":"Some Other Status","blockedBy":[]}],"previousEnvRfds":[{"rfdIssueKey":"RFD-AUTO-DLVR-01","env":"dlvr","status":"Closed","labels":"auto"}]}};
+            const rfdNotApprovedRfcRfdContext = {"rfcIssueKey":"MyRFCissue-99","rfcStatus":"Authorized for Test","rfdsByEnv":{"test": {"rfds":[{"rfdIssueKey":"RFD-AUTO-TEST-01","labels":"auto","env":"test","status":"Approved","blockedBy":[{"issueKey":"INWARDISSUE-0","status":"Resolved","blockingOn":"RFD-AUTO-TEST-01"}]},{"rfdIssueKey":"RFD-BUSINESS-TEST-01","labels":"some-label","env":"test","status":"Some Other Status","blockedBy":[]}],"previousEnvRfds":[{"rfdIssueKey":"RFD-AUTO-DLVR-01","env":"dlvr","status":"Closed","labels":"auto"}]}}};
             const rfcIssueKey = rfdNotApprovedRfcRfdContext.rfcIssueKey;
             sandbox.stub(verifier, 'obtainCurrentRfcRfdContext').resolves(rfdNotApprovedRfcRfdContext);
 
@@ -80,7 +80,7 @@ describe("obtainCurrentRfcRfdContext:", function() {
             expect(result.reason.code).toEqual(REASON.REASON_CODE_RFD_NOT_APPROVED);
             expect(result.reason.issueItems.length).not.toBe(0);
             const resultIssueItemsIssueKeys = result.reason.issueItems.map(item => item.rfdIssueKey);
-            expect(resultIssueItemsIssueKeys).toContain(rfdNotApprovedRfcRfdContext.rfdsByEnv.rfds[1].rfdIssueKey);
+            expect(resultIssueItemsIssueKeys).toContain(rfdNotApprovedRfcRfdContext.rfdsByEnv[env].rfds[1].rfdIssueKey);
             result.reason.issueItems.forEach((issueItem) => {
                 expect(issueItem.env).toEqual(env);
                 expect(issueItem.status).not.toEqual(ISSUE_STATUS_NAME.APPROVED);
@@ -94,7 +94,7 @@ describe("obtainCurrentRfcRfdContext:", function() {
             settings.options.env = env;
             settings.phase = env;
             const verifier = new Verifier(settings);
-            const previousRfdNotClosedRfcRfdContext = {"rfcIssueKey":"MyRFCissue-99","rfcStatus":"Authorized for Test","rfdsByEnv":{"env":"test","rfds":[{"rfdIssueKey":"RFD-AUTO-TEST-01","labels":"auto","env":"test","status":"Approved","blockedBy":[{"issueKey":"INWARDISSUE-0","status":"Resolved","blockingOn":"RFD-AUTO-TEST-01"}]},{"rfdIssueKey":"RFD-BUSINESS-TEST-01","labels":"some-label","env":"test","status":"Approved","blockedBy":[{"issueKey":"INWARDISSUE-0","status":"Resolved","blockingOn":"RFD-BUSINESS-TEST-01"},{"issueKey":"INWARDISSUE-1","status":"Resolved","blockingOn":"RFD-BUSINESS-TEST-01"},{"issueKey":"INWARDISSUE-2","status":"Resolved","blockingOn":"RFD-BUSINESS-TEST-01"}]}],"previousEnvRfds":[{"rfdIssueKey":"RFD-AUTO-DLVR-01","env":"dlvr","status":"Approved","labels":"auto"}]}};
+            const previousRfdNotClosedRfcRfdContext = {"rfcIssueKey":"MyRFCissue-99","rfcStatus":"Authorized for Test","rfdsByEnv":{"test": {"rfds":[{"rfdIssueKey":"RFD-AUTO-TEST-01","labels":"auto","env":"test","status":"Approved","blockedBy":[{"issueKey":"INWARDISSUE-0","status":"Resolved","blockingOn":"RFD-AUTO-TEST-01"}]},{"rfdIssueKey":"RFD-BUSINESS-TEST-01","labels":"some-label","env":"test","status":"Approved","blockedBy":[{"issueKey":"INWARDISSUE-0","status":"Resolved","blockingOn":"RFD-BUSINESS-TEST-01"},{"issueKey":"INWARDISSUE-1","status":"Resolved","blockingOn":"RFD-BUSINESS-TEST-01"},{"issueKey":"INWARDISSUE-2","status":"Resolved","blockingOn":"RFD-BUSINESS-TEST-01"}]}],"previousEnvRfds":[{"rfdIssueKey":"RFD-AUTO-DLVR-01","env":"dlvr","status":"Approved","labels":"auto"}]}}};
             const rfcIssueKey = previousRfdNotClosedRfcRfdContext.rfcIssueKey;
             sandbox.stub(verifier, 'obtainCurrentRfcRfdContext').resolves(previousRfdNotClosedRfcRfdContext);
 
@@ -110,7 +110,7 @@ describe("obtainCurrentRfcRfdContext:", function() {
             expect(result.reason.code).toEqual(REASON.REASON_CODE_PREVIOUS_RFD_NOT_CLOSED);
             expect(result.reason.issueItems.length).not.toBe(0);
             const resultIssueItemsIssueKeys = result.reason.issueItems.map(item => item.rfdIssueKey);
-            expect(resultIssueItemsIssueKeys).toContain(previousRfdNotClosedRfcRfdContext.rfdsByEnv.previousEnvRfds[0].rfdIssueKey);
+            expect(resultIssueItemsIssueKeys).toContain(previousRfdNotClosedRfcRfdContext.rfdsByEnv[env].previousEnvRfds[0].rfdIssueKey);
             result.reason.issueItems.forEach((issueItem) => {
                 expect(issueItem.env).toEqual(previousEnv(env));
                 expect(issueItem.status).not.toEqual(ISSUE_STATUS_NAME.CLOSED);
@@ -124,7 +124,7 @@ describe("obtainCurrentRfcRfdContext:", function() {
             settings.options.env = env;
             settings.phase = env;
             const verifier = new Verifier(settings);
-            const dlvrRFCnotAuthorizedRfcRfdContext = {"rfcIssueKey":"MyRFCissue-99","rfcStatus":"In Review for Int","rfdsByEnv":{"env":"dlvr","rfds":[{"rfdIssueKey":"RFD-AUTO-DLVR-01","labels":"auto","env":"dlvr","status":"Approved","blockedBy":[{"issueKey":"INWARDISSUE-0","status":"Resolved","blockingOn":"RFD-AUTO-DLVR-01"}]}],"previousEnvRfds":[]}};
+            const dlvrRFCnotAuthorizedRfcRfdContext = {"rfcIssueKey":"MyRFCissue-99","rfcStatus":"In Review for Int","rfdsByEnv":{"dlvr": {"rfds":[{"rfdIssueKey":"RFD-AUTO-DLVR-01","labels":"auto","env":"dlvr","status":"Approved","blockedBy":[{"issueKey":"INWARDISSUE-0","status":"Resolved","blockingOn":"RFD-AUTO-DLVR-01"}]}],"previousEnvRfds":[]}}};
             const rfcIssueKey = dlvrRFCnotAuthorizedRfcRfdContext.rfcIssueKey;
             sandbox.stub(verifier, 'obtainCurrentRfcRfdContext').resolves(dlvrRFCnotAuthorizedRfcRfdContext);
 
@@ -150,7 +150,7 @@ describe("obtainCurrentRfcRfdContext:", function() {
             settings.options.env = env;
             settings.phase = env;
             const verifier = new Verifier(settings);
-            const testRFCnotAuthorizedRfcRfdContext = {"rfcIssueKey":"MyRFCissue-99","rfcStatus":"In Review for Test","rfdsByEnv":{"env":"test","rfds":[{"rfdIssueKey":"RFD-AUTO-TEST-01","labels":"auto","env":"test","status":"Approved","blockedBy":[{"issueKey":"INWARDISSUE-0","status":"Resolved","blockingOn":"RFD-AUTO-TEST-01"}]},{"rfdIssueKey":"RFD-BUSINESS-TEST-01","labels":"some-label","env":"test","status":"Approved","blockedBy":[{"issueKey":"INWARDISSUE-0","status":"Resolved","blockingOn":"RFD-BUSINESS-TEST-01"},{"issueKey":"INWARDISSUE-1","status":"Resolved","blockingOn":"RFD-BUSINESS-TEST-01"},{"issueKey":"INWARDISSUE-2","status":"Resolved","blockingOn":"RFD-BUSINESS-TEST-01"}]}],"previousEnvRfds":[{"rfdIssueKey":"RFD-AUTO-DLVR-01","env":"dlvr","status":"Closed","labels":"auto"}]}};
+            const testRFCnotAuthorizedRfcRfdContext = {"rfcIssueKey":"MyRFCissue-99","rfcStatus":"In Review for Test","rfdsByEnv":{"test": {"rfds":[{"rfdIssueKey":"RFD-AUTO-TEST-01","labels":"auto","env":"test","status":"Approved","blockedBy":[{"issueKey":"INWARDISSUE-0","status":"Resolved","blockingOn":"RFD-AUTO-TEST-01"}]},{"rfdIssueKey":"RFD-BUSINESS-TEST-01","labels":"some-label","env":"test","status":"Approved","blockedBy":[{"issueKey":"INWARDISSUE-0","status":"Resolved","blockingOn":"RFD-BUSINESS-TEST-01"},{"issueKey":"INWARDISSUE-1","status":"Resolved","blockingOn":"RFD-BUSINESS-TEST-01"},{"issueKey":"INWARDISSUE-2","status":"Resolved","blockingOn":"RFD-BUSINESS-TEST-01"}]}],"previousEnvRfds":[{"rfdIssueKey":"RFD-AUTO-DLVR-01","env":"dlvr","status":"Closed","labels":"auto"}]}}};
             const rfcIssueKey = testRFCnotAuthorizedRfcRfdContext.rfcIssueKey;
             sandbox.stub(verifier, 'obtainCurrentRfcRfdContext').resolves(testRFCnotAuthorizedRfcRfdContext);
 
@@ -176,7 +176,7 @@ describe("obtainCurrentRfcRfdContext:", function() {
             settings.options.env = env;
             settings.phase = env;
             const verifier = new Verifier(settings);
-            const prodRFCnotAuthorizedRfcRfdContext = {"rfcIssueKey":"MyRFCissue-99","rfcStatus":"In Review for Prod","rfdsByEnv":{"env":"prod","rfds":[{"rfdIssueKey":"RFD-AUTO-PROD-01","labels":"auto","env":"prod","status":"Approved","blockedBy":[]}],"previousEnvRfds":[{"rfdIssueKey":"RFD-AUTO-TEST-01","env":"test","status":"Closed","labels":"auto"}]}};
+            const prodRFCnotAuthorizedRfcRfdContext = {"rfcIssueKey":"MyRFCissue-99","rfcStatus":"In Review for Prod","rfdsByEnv":{"prod": {"rfds":[{"rfdIssueKey":"RFD-AUTO-PROD-01","labels":"auto","env":"prod","status":"Approved","blockedBy":[]}],"previousEnvRfds":[{"rfdIssueKey":"RFD-AUTO-TEST-01","env":"test","status":"Closed","labels":"auto"}]}}};
             const rfcIssueKey = prodRFCnotAuthorizedRfcRfdContext.rfcIssueKey;
             sandbox.stub(verifier, 'obtainCurrentRfcRfdContext').resolves(prodRFCnotAuthorizedRfcRfdContext);
 
@@ -193,7 +193,7 @@ describe("obtainCurrentRfcRfdContext:", function() {
             expect(result.reason.issueItems.length).not.toBe(0);
             expect(result.reason.issueItems.rfcIssueKey).toEqual(rfcIssueKey);
             expect(result.reason.issueItems.rfcStatus).not.toEqual(ISSUE_STATUS_NAME.AUTHORIZEDFORPROD);
-            expect(result.reason.issueItems.rfdsByEnv.previousEnvRfds[0].env).toEqual(previousEnv(env));
+            expect(result.reason.issueItems.rfdsByEnv[env].previousEnvRfds[0].env).toEqual(previousEnv(env));
         }); 
 
         it("When all conditions passed verification, return result: status='Ready' and rfcRfdContext", async function() {
@@ -203,7 +203,7 @@ describe("obtainCurrentRfcRfdContext:", function() {
             settings.options.env = env;
             settings.phase = env;
             const verifier = new Verifier(settings);
-            const testAllVerifiedRfcRfdContext = {"rfcIssueKey":"MyRFCissue-99","rfcStatus":"Authorized for Test","rfdsByEnv":{"env":"test","rfds":[{"rfdIssueKey":"RFD-AUTO-TEST-01","labels":"auto","env":"test","status":"Approved","blockedBy":[{"issueKey":"INWARDISSUE-0","status":"Resolved","blockingOn":"RFD-AUTO-TEST-01"}]},{"rfdIssueKey":"RFD-BUSINESS-TEST-01","labels":"some-label","env":"test","status":"Approved","blockedBy":[{"issueKey":"INWARDISSUE-0","status":"Resolved","blockingOn":"RFD-BUSINESS-TEST-01"},{"issueKey":"INWARDISSUE-1","status":"Resolved","blockingOn":"RFD-BUSINESS-TEST-01"},{"issueKey":"INWARDISSUE-2","status":"Resolved","blockingOn":"RFD-BUSINESS-TEST-01"}]}],"previousEnvRfds":[{"rfdIssueKey":"RFD-AUTO-DLVR-01","env":"dlvr","status":"Closed","labels":"auto"}]}};
+            const testAllVerifiedRfcRfdContext = {"rfcIssueKey":"MyRFCissue-99","rfcStatus":"Authorized for Test","rfdsByEnv":{"test": {"rfds":[{"rfdIssueKey":"RFD-AUTO-TEST-01","labels":"auto","env":"test","status":"Approved","blockedBy":[{"issueKey":"INWARDISSUE-0","status":"Resolved","blockingOn":"RFD-AUTO-TEST-01"}]},{"rfdIssueKey":"RFD-BUSINESS-TEST-01","labels":"some-label","env":"test","status":"Approved","blockedBy":[{"issueKey":"INWARDISSUE-0","status":"Resolved","blockingOn":"RFD-BUSINESS-TEST-01"},{"issueKey":"INWARDISSUE-1","status":"Resolved","blockingOn":"RFD-BUSINESS-TEST-01"},{"issueKey":"INWARDISSUE-2","status":"Resolved","blockingOn":"RFD-BUSINESS-TEST-01"}]}],"previousEnvRfds":[{"rfdIssueKey":"RFD-AUTO-DLVR-01","env":"dlvr","status":"Closed","labels":"auto"}]}}};
             const rfcIssueKey = testAllVerifiedRfcRfdContext.rfcIssueKey;
             sandbox.stub(verifier, 'obtainCurrentRfcRfdContext').resolves(testAllVerifiedRfcRfdContext);
 
@@ -232,9 +232,9 @@ describe("obtainCurrentRfcRfdContext:", function() {
             jiraClientStub.getIssue.withArgs(RFD_ISSUE_KEY_PROD_STUB).resolves(getDefaultRfdIssueInfo(RFD_ISSUE_KEY_PROD_STUB));
     
             // Act
-            const dlvrEnv = 'dlvr';
+            const env = 'dlvr';
             const dlvrVerifier = new Verifier(getDefaultSettings());
-            const dlvrRfcRfdContext = await dlvrVerifier.obtainCurrentRfcRfdContext(dlvrEnv, rfcIssueKeyStub);
+            const dlvrRfcRfdContext = await dlvrVerifier.obtainCurrentRfcRfdContext(env, rfcIssueKeyStub);
             // console.log('dlvrRfcRfdContext', JSON.stringify(dlvrRfcRfdContext));
 
             // Verify
@@ -243,20 +243,20 @@ describe("obtainCurrentRfcRfdContext:", function() {
             const getCalledCount = rfcIssueStub.fields.issuelinks.filter(link => link.type.name === ISSUE_LINK_TYPE_NAME.RFC_FRD).reduce((accumulator, link) => { return accumulator + 1}, 0);
             sandbox.assert.callCount(jiraClientStub.getIssue, getCalledCount);
             expect(dlvrRfcRfdContext.rfcIssueKey).toBe(rfcIssueKeyStub);
-            expect(dlvrRfcRfdContext.rfdsByEnv.env).toEqual(dlvrEnv);
-            expect(dlvrRfcRfdContext.rfdsByEnv.rfds).toBeInstanceOf(Array);
-            dlvrRfcRfdContext.rfdsByEnv.rfds.forEach((rfdInfo) => {
+            expect(Object.keys(dlvrRfcRfdContext.rfdsByEnv)).toContain(env);
+            expect(dlvrRfcRfdContext.rfdsByEnv[env].rfds).toBeInstanceOf(Array);
+            dlvrRfcRfdContext.rfdsByEnv[env].rfds.forEach((rfdInfo) => {
                 expect(rfdInfo.rfdIssueKey).toEqual(RFD_ISSUE_KEY_DLVR_STUB);
                 expect(rfdInfo.blockedBy).toBeInstanceOf(Array);
-                expect(rfdInfo.env).toEqual(dlvrEnv);
+                expect(rfdInfo.env).toEqual(env);
                 if (rfdInfo.blockedBy) {
                     rfdInfo.blockedBy.forEach((blockedByIssue) => {
                         expect(blockedByIssue.blockingOn).toEqual(rfdInfo.rfdIssueKey);
                     })
                 }
             });
-            expect(dlvrRfcRfdContext.rfdsByEnv.previousEnvRfds).toBeInstanceOf(Array);
-            expect(dlvrRfcRfdContext.rfdsByEnv.previousEnvRfds.every(p => p.env == previousEnv(dlvrEnv))).toBe(true);
+            expect(dlvrRfcRfdContext.rfdsByEnv[env].previousEnvRfds).toBeInstanceOf(Array);
+            expect(dlvrRfcRfdContext.rfdsByEnv[env].previousEnvRfds.every(p => p.env == previousEnv(env))).toBe(true);
             
         });
     
@@ -272,10 +272,10 @@ describe("obtainCurrentRfcRfdContext:", function() {
             jiraClientStub.getIssue.withArgs(RFD_ISSUE_KEY_PROD_STUB).resolves(getDefaultRfdIssueInfo(RFD_ISSUE_KEY_PROD_STUB));
     
             // Act
-            const testEnv = 'test';
+            const env = 'test';
             const testVerifier = new Verifier(getDefaultSettings());
-            const testRfcRfdContext = await testVerifier.obtainCurrentRfcRfdContext(testEnv, rfcIssueKeyStub);
-            // console.log('testRfcRfdContext', JSON.stringify(testRfcRfdContext));
+            const testRfcRfdContext = await testVerifier.obtainCurrentRfcRfdContext(env, rfcIssueKeyStub);
+            console.log('testRfcRfdContext', JSON.stringify(testRfcRfdContext));
 
             // Verify
             sandbox.assert.calledOnce(jiraClientStub.retrieveRfcIssueInfo);
@@ -283,20 +283,20 @@ describe("obtainCurrentRfcRfdContext:", function() {
             const getCalledCount = rfcIssueStub.fields.issuelinks.filter(link => link.type.name === ISSUE_LINK_TYPE_NAME.RFC_FRD).reduce((accumulator, link) => { return accumulator + 1}, 0);
             sandbox.assert.callCount(jiraClientStub.getIssue, getCalledCount);
             expect(testRfcRfdContext.rfcIssueKey).toBe(rfcIssueKeyStub);
-            expect(testRfcRfdContext.rfdsByEnv.env).toEqual(testEnv);
-            expect(testRfcRfdContext.rfdsByEnv.rfds).toBeInstanceOf(Array);
-            expect(testRfcRfdContext.rfdsByEnv.rfds.map(rfd => rfd.rfdIssueKey)).toEqual(expect.arrayContaining(['RFD-AUTO-TEST-01','RFD-BUSINESS-TEST-01']));
-            testRfcRfdContext.rfdsByEnv.rfds.forEach((rfdInfo) => {
+            expect(Object.keys(testRfcRfdContext.rfdsByEnv)).toContain(env);
+            expect(testRfcRfdContext.rfdsByEnv[env].rfds).toBeInstanceOf(Array);
+            expect(testRfcRfdContext.rfdsByEnv[env].rfds.map(rfd => rfd.rfdIssueKey)).toEqual(expect.arrayContaining(['RFD-AUTO-TEST-01','RFD-BUSINESS-TEST-01']));
+            testRfcRfdContext.rfdsByEnv[env].rfds.forEach((rfdInfo) => {
                 expect(rfdInfo.blockedBy).toBeInstanceOf(Array);
-                expect(rfdInfo.env).toEqual(testEnv);
+                expect(rfdInfo.env).toEqual(env);
                 if (rfdInfo.blockedBy) {
                     rfdInfo.blockedBy.forEach((blockedByIssue) => {
                         expect(blockedByIssue.blockingOn).toEqual(rfdInfo.rfdIssueKey);
                     })
                 }
             });
-            expect(testRfcRfdContext.rfdsByEnv.previousEnvRfds).toBeInstanceOf(Array);
-            expect(testRfcRfdContext.rfdsByEnv.previousEnvRfds.every(p => p.env == previousEnv(testEnv))).toBe(true);
+            expect(testRfcRfdContext.rfdsByEnv[env].previousEnvRfds).toBeInstanceOf(Array);
+            expect(testRfcRfdContext.rfdsByEnv[env].previousEnvRfds.every(p => p.env == previousEnv(env))).toBe(true);
         });
 
         it("When RFC is not found, Error throws", async function() {
