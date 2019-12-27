@@ -11,21 +11,21 @@ describe("BasicJavaApplicationBuilder:", function() {
 
   let ocApplyRecommendedLabelsStub;
   let ocApplyAndBuildStub;
-  let gitObjStub;
+  let gitVerifyStub;
   let jiraCreateRfdStub;
 
    // stubing
   this.beforeEach(function() {
     ocApplyRecommendedLabelsStub = sandbox.stub(OpenShiftClientX.prototype, 'applyRecommendedLabels');
     ocApplyAndBuildStub = sandbox.stub(OpenShiftClientX.prototype, 'applyAndBuild');
-    gitObjStub = sandbox.stub(Git.prototype, 'verify');
+    gitVerifyStub = sandbox.stub(Git.prototype, 'verify');
     jiraCreateRfdStub = sandbox.stub(Jira.prototype, 'createRFD');
   });
 
   afterEach(function() {
     ocApplyRecommendedLabelsStub.restore();
     ocApplyAndBuildStub.restore();
-    gitObjStub.restore();
+    gitVerifyStub.restore();
     jiraCreateRfdStub.restore();
   });
 
@@ -37,16 +37,16 @@ describe("BasicJavaApplicationBuilder:", function() {
       const builder = new BasicJavaApplicationBuilder(settingsStub);
       const processedTemplateStub = {processTemplates:"myTemplate"};
       sandbox.stub(builder, 'processTemplates').callsFake(() => processedTemplateStub);
-      gitObjStub.returns(Promise.resolve('True')); // git verify passed.
+      gitVerifyStub.returns(Promise.resolve('True')); // git verify passed.
   
       // Act
-      const result = await builder.build();
+      await builder.build();
 
       // Verify
       sandbox.assert.calledOnce(builder.processTemplates);
       sandbox.assert.calledOnce(jiraCreateRfdStub);
-      sandbox.assert.calledOnce(gitObjStub);
-      sandbox.assert.calledWith(gitObjStub,
+      sandbox.assert.calledOnce(gitVerifyStub);
+      sandbox.assert.calledWith(gitVerifyStub,
         settingsStub.options.git.branch.merge,
         settingsStub.options.git.change.target,
         settingsStub.phases['build'].credentials.idir.user,
@@ -74,16 +74,16 @@ describe("BasicJavaApplicationBuilder:", function() {
       const builder = new BasicJavaApplicationBuilder(settingsStub);
       const processedTemplateStub = {processTemplates:"myTemplate"};
       sandbox.stub(builder, 'processTemplates').callsFake(() => processedTemplateStub);
-      gitObjStub.returns(Promise.resolve('True')); // git verify passed.
+      gitVerifyStub.returns(Promise.resolve('True')); // git verify passed.
   
       // Act
-      const result = await builder.build();
+      await builder.build();
   
       // Verify
       sandbox.assert.calledOnce(builder.processTemplates);
       sandbox.assert.notCalled(jiraCreateRfdStub);
-      sandbox.assert.calledOnce(gitObjStub);
-      sandbox.assert.calledWith(gitObjStub,
+      sandbox.assert.calledOnce(gitVerifyStub);
+      sandbox.assert.calledWith(gitVerifyStub,
         settingsStub.options.git.branch.merge,
         settingsStub.options.git.change.target,
         settingsStub.phases['build'].credentials.idir.user,
@@ -103,16 +103,46 @@ describe("BasicJavaApplicationBuilder:", function() {
     });
   });
    
-  it("Throw error, when no target branch defined from calling this module...", async function() {
-    // Arrange
-    const settingsStub = getDefaultSettings();
-    settingsStub.options.git.change.target = undefined;
-    const builder = new BasicJavaApplicationBuilder(settingsStub);
-    const processedTemplateStub = {processTemplates:"myTemplate"};
-    sandbox.stub(builder, 'processTemplates').callsFake(() => processedTemplateStub);
-      
-    // Act
-    return expect(builder.build()).rejects.toThrow();
+  context("When no target branch defined from calling this module...", function() {
+    it("When 'target' is not defined, will do the build but no JIRA createRFD", async function() {
+      // Arrange
+      const settingsStub = getDefaultSettings();
+      settingsStub.options.git.change.target = undefined;
+      const builder = new BasicJavaApplicationBuilder(settingsStub);
+      const processedTemplateStub = {processTemplates:"myTemplate"};
+      sandbox.stub(builder, 'processTemplates').callsFake(() => processedTemplateStub);
+      gitVerifyStub.returns(Promise.resolve('True')); // git verify passed.
+
+      // Act
+      const result = await builder.build();
+
+      // Verify
+      sandbox.assert.calledOnce(builder.processTemplates);
+      sandbox.assert.notCalled(jiraCreateRfdStub);
+      sandbox.assert.calledOnce(gitVerifyStub);
+      sandbox.assert.calledOnce(ocApplyRecommendedLabelsStub);
+      sandbox.assert.calledOnce(ocApplyAndBuildStub);
+    });
+
+    it("When 'git.change' is not defined, will do the build but no JIRA createRFD", async function() {
+      // Arrange
+      const settingsStub = getDefaultSettings();
+      settingsStub.options.git.change = undefined;
+      const builder = new BasicJavaApplicationBuilder(settingsStub);
+      const processedTemplateStub = {processTemplates:"myTemplate"};
+      sandbox.stub(builder, 'processTemplates').callsFake(() => processedTemplateStub);
+      gitVerifyStub.returns(Promise.resolve('True')); // git verify passed.
+
+      // Act
+      const result = await builder.build();
+
+      // Verify
+      sandbox.assert.calledOnce(builder.processTemplates);
+      sandbox.assert.notCalled(jiraCreateRfdStub);
+      sandbox.assert.calledOnce(gitVerifyStub);
+      sandbox.assert.calledOnce(ocApplyRecommendedLabelsStub);
+      sandbox.assert.calledOnce(ocApplyAndBuildStub);
+    });
   });
 
   function getDefaultSettings() {
