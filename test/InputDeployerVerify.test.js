@@ -7,6 +7,54 @@ const {ENV, ISSUE_STATUS_NAME, ISSUE_LINK_TYPE_NAME, VERIFY_STATUS, REASON} = re
 const {previousEnv} = require("../lib/util-functions");
 const Verifier = require("../lib/InputDeployerVerify");
 
+
+describe("verifyBeforeDeployment:", function() {
+    this.timeout(50000);
+    let isReadyForDeploymentStub;
+
+    this.beforeEach(function() {
+        isReadyForDeploymentStub = sandbox.stub(Verifier.prototype, 'isReadyForDeployment');
+    });
+    this.afterEach(function() {
+        sandbox.restore();
+    })
+
+    it("When RFC/RFD conditions are not met, return result with 'Not Ready' status", async function() {
+        const env = 'test';
+        const settings = getDefaultSettings();
+        settings.options.env = env;
+        settings.phase = env;
+        const keys = settings.options.git.branch.merge.split('-');
+        const rfcIssuKey = keys[0] + '-' + keys[1];
+        let verifier = new Verifier(settings);
+        isReadyForDeploymentStub.withArgs(env, rfcIssuKey).resolves({"status":"Not Ready","rfcRfdContext":{"rfcIssueKey":"MyRFCissue-99","rfcStatus":"Authorized for Test","rfdsByEnv":{"test":{"rfds":[{"issueKey":"RFD-AUTO-TEST-01","labels":"auto","env":"test","status":"Approved","blockedBy":[{"issueKey":"INWARDISSUE-0","status":"Resolved","blockingOn":"RFD-AUTO-TEST-01"}]},{"issueKey":"RFD-BUSINESS-TEST-01","labels":"some-label","env":"test","status":"Some Other Status","blockedBy":[]}],"previousEnvRfds":[{"issueKey":"RFD-AUTO-DLVR-01","env":"dlvr","status":"Closed","labels":"auto"}]}}},"reason":{"code":"RFD_NOT_APPROVED","description":"RFD(s) are not approved","issueItems":[{"issueKey":"RFD-BUSINESS-TEST-01","labels":"some-label","env":"test","status":"Some Other Status","blockedBy":[]}]}});
+
+        // Act
+        const result = await verifier.verifyBeforeDeployment(settings);
+        expect(result).toBeDefined();
+        expect(Object.keys(result)).toContain('status');
+        expect(Object.keys(result)).toContain('reason');
+        expect(result.status).toEqual(VERIFY_STATUS.NOT_READY);
+    });
+
+    it("When RFC/RFD conditons are met for deployment, return result with 'Ready' status.", async function() {
+        const env = 'test';
+        const settings = getDefaultSettings();
+        settings.options.env = env;
+        settings.phase = env;
+        const keys = settings.options.git.branch.merge.split('-');
+        const rfcIssuKey = keys[0] + '-' + keys[1];
+        let verifier = new Verifier(settings);
+        isReadyForDeploymentStub.withArgs(env, rfcIssuKey).resolves({"status":"Ready","rfcRfdContext":{"rfcIssueKey":"MyRFCissue-99","rfcStatus":"Authorized for Test","rfdsByEnv":{"test":{"rfds":[{"issueKey":"RFD-AUTO-TEST-01","labels":"auto","env":"test","status":"Approved","blockedBy":[{"issueKey":"INWARDISSUE-0","status":"Resolved","blockingOn":"RFD-AUTO-TEST-01"}]},{"issueKey":"RFD-BUSINESS-TEST-01","labels":"some-label","env":"test","status":"Approved","blockedBy":[{"issueKey":"INWARDISSUE-0","status":"Resolved","blockingOn":"RFD-BUSINESS-TEST-01"},{"issueKey":"INWARDISSUE-1","status":"Resolved","blockingOn":"RFD-BUSINESS-TEST-01"},{"issueKey":"INWARDISSUE-2","status":"Resolved","blockingOn":"RFD-BUSINESS-TEST-01"}]}],"previousEnvRfds":[{"issueKey":"RFD-AUTO-DLVR-01","env":"dlvr","status":"Closed","labels":"auto"}]}}}});
+
+        // Act
+        const result = await verifier.verifyBeforeDeployment(settings);
+        expect(result).toBeDefined();
+        expect(Object.keys(result)).toContain('status');
+        expect(result.status).toEqual(VERIFY_STATUS.READY);
+    });
+});
+
 describe("obtainCurrentRfcRfdContext:", function() {
     this.timeout(50000);
     let jiraClientStub;
