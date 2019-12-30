@@ -32,9 +32,7 @@ describe("verifyBeforeDeployment:", function() {
         // Act
         const result = await verifier.verifyBeforeDeployment(settings);
         expect(result).toBeDefined();
-        expect(Object.keys(result)).toContain('status');
-        expect(Object.keys(result)).toContain('reason');
-        expect(result.status).toEqual(VERIFY_STATUS.NOT_READY);
+        expect(result).toEqual(VERIFY_STATUS.NOT_READY);
     });
 
     it("When RFC/RFD conditons are met for deployment, return result with 'Ready' status.", async function() {
@@ -50,8 +48,7 @@ describe("verifyBeforeDeployment:", function() {
         // Act
         const result = await verifier.verifyBeforeDeployment(settings);
         expect(result).toBeDefined();
-        expect(Object.keys(result)).toContain('status');
-        expect(result.status).toEqual(VERIFY_STATUS.READY);
+        expect(result).toEqual(VERIFY_STATUS.READY);
     });
 });
 
