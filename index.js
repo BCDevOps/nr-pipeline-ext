@@ -6,6 +6,7 @@ const InputDeployerVerify = require('./lib/InputDeployerVerify')
 
 const BasicJavaApplicationBuilder = require('./lib/BasicJavaApplicationBuilder')
 const BasicJavaApplicationDeployer= require('./lib/BasicJavaApplicationDeployer')
+const BasicJavaApplicationClean= require('./lib/BasicJavaApplicationClean')
 
 
 module.exports = {
@@ -15,5 +16,6 @@ module.exports = {
   CONST,
   BasicJavaApplicationBuilder,
   BasicJavaApplicationDeployer,
+  BasicJavaApplicationClean,
   InputDeployerVerify
 }
