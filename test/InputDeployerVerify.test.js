@@ -27,7 +27,7 @@ describe("verifyBeforeDeployment:", function() {
         const keys = settings.options.git.branch.merge.split('-');
         const rfcIssuKey = keys[0] + '-' + keys[1];
         let verifier = new Verifier(settings);
-        isReadyForDeploymentStub.withArgs(env, rfcIssuKey).resolves({"status":"Not Ready","rfcRfdContext":{"rfcIssueKey":"MyRFCissue-99","rfcStatus":"Authorized for Test","rfdsByEnv":{"test":{"rfds":[{"issueKey":"RFD-AUTO-TEST-01","labels":"auto","env":"test","status":"Approved","blockedBy":[{"issueKey":"INWARDISSUE-0","status":"Resolved","blockingOn":"RFD-AUTO-TEST-01"}]},{"issueKey":"RFD-BUSINESS-TEST-01","labels":"some-label","env":"test","status":"Some Other Status","blockedBy":[]}],"previousEnvRfds":[{"issueKey":"RFD-AUTO-DLVR-01","env":"dlvr","status":"Closed","labels":"auto"}]}}},"reason":{"code":"RFD_NOT_APPROVED","description":"RFD(s) are not approved","issueItems":[{"issueKey":"RFD-BUSINESS-TEST-01","labels":"some-label","env":"test","status":"Some Other Status","blockedBy":[]}]}});
+        isReadyForDeploymentStub.withArgs(env, rfcIssuKey).resolves({"status":"Not Ready","rfcRfdContext":{"rfcIssueKey":"MyRFCissue-99","rfcStatus":"Authorized for Test","rfdsByEnv":{"test":{"rfds":[{"issueKey":"RFD-AUTO-TEST-01","labels":"auto","env":"test","status":"Approved","blockedBy":[{"issueKey":"INWARDISSUE-0","status":"Resolved","blockingOn":"RFD-AUTO-TEST-01"}]},{"issueKey":"RFD-BUSINESS-TEST-01","labels":"some-label","env":"test","status":"Some Other Status","blockedBy":[]}],"previousEnvRfds":[{"issueKey":"RFD-AUTO-DLVR-01","env":"dlvr","status":"Closed","labels":"auto"}]}}},"reason":{"RFD_BLOCKED":{"description":"RFD(s) are blocked","issueItems":[{"issueKey":"INWARDISSUE-0","status":"Some Other Status","blockingOn":"RFD-AUTO-TEST-01"}]},"RFD_NOT_APPROVED":{"description":"RFD(s) are not approved","issueItems":[{"issueKey":"RFD-BUSINESS-TEST-01","labels":"some-label","env":"test","status":"Some Other Status","blockedBy":[]}]},"PREVIOUS_RFD_NOT_CLOSED":{"description":"Previous stage RFD(s) are not closed","issueItems":[{"issueKey":"RFD-AUTO-DLVR-01","env":"dlvr","status":"Approved","labels":"auto"}]},"RFC_NOT_AUTHORIZED":{"description":"RFC is not authorized to target environment","issueItems":[{"issueKey":"MyRFCissue-99","status":"In Review for Test"}]}}});
 
         // Act
         const result = await verifier.verifyBeforeDeployment(settings);
@@ -93,10 +93,11 @@ describe("obtainCurrentRfcRfdContext:", function() {
             expect(result.status).toEqual(VERIFY_STATUS.NOT_READY);
             expect(Object.keys(result)).toEqual(expect.arrayContaining(["status", "rfcRfdContext", "reason"]));
             expect(result.rfcRfdContext).toEqual(blockedByRfcRfdContext);
-            expect(result.reason.code).toEqual(REASON.REASON_CODE_RFD_BLOCKED);
-            expect(result.reason.issueItems.length).not.toBe(0);
+            expect(Object.keys(result.reason)).toContain(REASON.REASON_CODE_RFD_BLOCKED);
+            const blocked = result.reason[REASON.REASON_CODE_RFD_BLOCKED];
+            expect(blocked.issueItems.length).not.toBe(0);
             const rfds = blockedByRfcRfdContext.rfdsByEnv[env].rfds.map(rfd => rfd.issueKey);
-            result.reason.issueItems.forEach(item => {
+            blocked.issueItems.forEach(item => {
                 expect(item.status).not.toBe(ISSUE_STATUS_NAME.RESOLVED);
                 expect(rfds).toContain(item.blockingOn);
             });
@@ -122,11 +123,12 @@ describe("obtainCurrentRfcRfdContext:", function() {
             expect(result.status).toEqual(VERIFY_STATUS.NOT_READY);
             expect(Object.keys(result)).toEqual(expect.arrayContaining(["status", "rfcRfdContext", "reason"]));
             expect(result.rfcRfdContext).toEqual(rfdNotApprovedRfcRfdContext);
-            expect(result.reason.code).toEqual(REASON.REASON_CODE_RFD_NOT_APPROVED);
-            expect(result.reason.issueItems.length).not.toBe(0);
-            const resultIssueItemsIssueKeys = result.reason.issueItems.map(item => item.issueKey);
+            expect(Object.keys(result.reason)).toContain(REASON.REASON_CODE_RFD_NOT_APPROVED);
+            const notApproved = result.reason[REASON.REASON_CODE_RFD_NOT_APPROVED];
+            expect(notApproved.issueItems.length).not.toBe(0);
+            const resultIssueItemsIssueKeys = notApproved.issueItems.map(item => item.issueKey);
             expect(resultIssueItemsIssueKeys).toContain(rfdNotApprovedRfcRfdContext.rfdsByEnv[env].rfds[1].issueKey);
-            result.reason.issueItems.forEach((issueItem) => {
+            notApproved.issueItems.forEach((issueItem) => {
                 expect(issueItem.env).toEqual(env);
                 expect(issueItem.status).not.toEqual(ISSUE_STATUS_NAME.APPROVED);
             });
@@ -152,11 +154,12 @@ describe("obtainCurrentRfcRfdContext:", function() {
             expect(result.status).toEqual(VERIFY_STATUS.NOT_READY);
             expect(Object.keys(result)).toEqual(expect.arrayContaining(["status", "rfcRfdContext", "reason"]));
             expect(result.rfcRfdContext).toEqual(previousRfdNotClosedRfcRfdContext);
-            expect(result.reason.code).toEqual(REASON.REASON_CODE_PREVIOUS_RFD_NOT_CLOSED);
-            expect(result.reason.issueItems.length).not.toBe(0);
-            const resultIssueItemsIssueKeys = result.reason.issueItems.map(item => item.issueKey);
+            expect(Object.keys(result.reason)).toContain(REASON.REASON_CODE_PREVIOUS_RFD_NOT_CLOSED);
+            const pNotClosed = result.reason[REASON.REASON_CODE_PREVIOUS_RFD_NOT_CLOSED];
+            expect(pNotClosed.issueItems.length).not.toBe(0);
+            const resultIssueItemsIssueKeys = pNotClosed.issueItems.map(item => item.issueKey);
             expect(resultIssueItemsIssueKeys).toContain(previousRfdNotClosedRfcRfdContext.rfdsByEnv[env].previousEnvRfds[0].issueKey);
-            result.reason.issueItems.forEach((issueItem) => {
+            pNotClosed.issueItems.forEach((issueItem) => {
                 expect(issueItem.env).toEqual(previousEnv(env));
                 expect(issueItem.status).not.toEqual(ISSUE_STATUS_NAME.CLOSED);
             });
@@ -182,9 +185,11 @@ describe("obtainCurrentRfcRfdContext:", function() {
             expect(result.status).toEqual(VERIFY_STATUS.NOT_READY);
             expect(Object.keys(result)).toEqual(expect.arrayContaining(["status", "rfcRfdContext", "reason"]));
             expect(result.rfcRfdContext).toEqual(dlvrRFCnotAuthorizedRfcRfdContext);
-            expect(result.reason.code).toEqual(REASON.REASON_CODE_RFC_NOT_AUTHORIZED);
-            expect(result.rfcRfdContext.rfcIssueKey).toEqual(rfcIssueKey);
-            expect(result.rfcRfdContext.rfcStatus).not.toEqual(ISSUE_STATUS_NAME.AUTHORIZEDFORINT);
+            expect(Object.keys(result.reason)).toContain(REASON.REASON_CODE_RFC_NOT_AUTHORIZED);
+            const notAuthorized = result.reason[REASON.REASON_CODE_RFC_NOT_AUTHORIZED];
+            expect(notAuthorized.issueItems[0].issueKey).toEqual(rfcIssueKey);
+            expect(notAuthorized.issueItems[0].status).not.toEqual(ISSUE_STATUS_NAME.AUTHORIZEDFORINT);
+            expect(notAuthorized.issueItems[0].env).toEqual(env);
         });    
 
         it("ENV=test but RFC is not Authorized to Test, return result: status='Not Ready', rfcRfdContext and reason with code: REASON_CODE_RFC_NOT_AUTHORIZED", async function() {
@@ -207,9 +212,11 @@ describe("obtainCurrentRfcRfdContext:", function() {
             expect(result.status).toEqual(VERIFY_STATUS.NOT_READY);
             expect(Object.keys(result)).toEqual(expect.arrayContaining(["status", "rfcRfdContext", "reason"]));
             expect(result.rfcRfdContext).toEqual(testRFCnotAuthorizedRfcRfdContext);
-            expect(result.reason.code).toEqual(REASON.REASON_CODE_RFC_NOT_AUTHORIZED);
-            expect(result.rfcRfdContext.rfcIssueKey).toEqual(rfcIssueKey);
-            expect(result.rfcRfdContext.rfcStatus).not.toEqual(ISSUE_STATUS_NAME.AUTHORIZEDFORTEST);
+            expect(Object.keys(result.reason)).toContain(REASON.REASON_CODE_RFC_NOT_AUTHORIZED);
+            const notAuthorized = result.reason[REASON.REASON_CODE_RFC_NOT_AUTHORIZED];
+            expect(notAuthorized.issueItems[0].issueKey).toEqual(rfcIssueKey);
+            expect(notAuthorized.issueItems[0].status).not.toEqual(ISSUE_STATUS_NAME.AUTHORIZEDFORTEST);
+            expect(notAuthorized.issueItems[0].env).toEqual(env);
         }); 
 
         it("ENV=prod but RFC is not Authorized to Prod, return result: status='Not Ready', rfcRfdContext and reason with code: REASON_CODE_RFC_NOT_AUTHORIZED", async function() {
@@ -232,9 +239,11 @@ describe("obtainCurrentRfcRfdContext:", function() {
             expect(result.status).toEqual(VERIFY_STATUS.NOT_READY);
             expect(Object.keys(result)).toEqual(expect.arrayContaining(["status", "rfcRfdContext", "reason"]));
             expect(result.rfcRfdContext).toEqual(prodRFCnotAuthorizedRfcRfdContext);
-            expect(result.reason.code).toEqual(REASON.REASON_CODE_RFC_NOT_AUTHORIZED);
-            expect(result.rfcRfdContext.rfcIssueKey).toEqual(rfcIssueKey);
-            expect(result.rfcRfdContext.rfcStatus).not.toEqual(ISSUE_STATUS_NAME.AUTHORIZEDFORPROD);
+            expect(Object.keys(result.reason)).toContain(REASON.REASON_CODE_RFC_NOT_AUTHORIZED);
+            const notAuthorized = result.reason[REASON.REASON_CODE_RFC_NOT_AUTHORIZED];
+            expect(notAuthorized.issueItems[0].issueKey).toEqual(rfcIssueKey);
+            expect(notAuthorized.issueItems[0].status).not.toEqual(ISSUE_STATUS_NAME.AUTHORIZEDFORPROD);
+            expect(notAuthorized.issueItems[0].env).toEqual(env);
         }); 
 
         it("When all conditions passed verification, return result: status='Ready' and rfcRfdContext", async function() {
