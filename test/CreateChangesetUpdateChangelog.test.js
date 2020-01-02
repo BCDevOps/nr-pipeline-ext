@@ -1,7 +1,10 @@
 "use strict";
 const expect = require('expect')
-var moment = require('moment-timezone')
-var generate = require("../lib/createChangesetUpdateChangelog")
+const moment = require('moment-timezone')
+const Generator = require("../lib/CreateChangesetUpdateChangelog")
+const generate=new Generator()
+const fs = require('fs')
+const sinon= require('sinon')
 
  describe("create Changeset", function() {
    this.timeout(50000);
@@ -30,6 +33,7 @@ var generate = require("../lib/createChangesetUpdateChangelog")
               })
            })
         }); 
+        
  describe("update changelog", function() {
         this.timeout(50000);
         context("On running ", function() {
@@ -43,7 +47,9 @@ describe("generate", function() {
         this.timeout(50000);
         context("On running ", function() {
             it.only("creates changeset and updates changelog", function() {
-                expect(generate.execute('testschema','test','SAMPLE-123','create-table')).toBe(true)
+                expect(generate.execute('testschema','test','SAMPLE-123','create-table','../migrations'))
                 })
             })
         });  
+
+       
