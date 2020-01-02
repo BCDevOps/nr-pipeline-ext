@@ -25,24 +25,3 @@ describe.only("schemacrawler module", function() {
          })
       })
    });
-
-   context("When checking installed version", function() {
-      it("version: show correct download version", function() {
-         const idir = require("./idir.local.json");
-         const schemaCrawler = new SchemaCrawler(fakeConfig.url, fakeConfig.user, fakeConfig.password, [{groupId:'com.oracle.jdbc', artifactId: 'ojdbc8', version: '18.3.0.0'}], idir);
-         return schemaCrawler.version().then(version=>{
-            expect(version).toBe(SCHEMA_CRAWLER_VERSION.substring(1));
-         })
-      });
-   });
-
-   context("Running SchemaCrawler command", function() {
-      it("runCommand: SchemaCrawler -h command executed successfully. ", function() {
-         const schemaCrawler = new SchemaCrawler(fakeConfig.url, fakeConfig.user, fakeConfig.password);
-         return schemaCrawler.run(["-h"]).then(output => {
-            expect(output.exitCode).toBe(0)
-         })
-      });
-   });
-
-});

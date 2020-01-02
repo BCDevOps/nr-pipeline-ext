@@ -65,7 +65,7 @@ describe("git module", function() {
     context("On running verify", function() {
        it.only("verify if branches can be merged", async function() {
           const gitObj = new Git()
-            return expect(gitObj.verify('feature/add-backup-recovery-to-basicOracleDatabaseDeployment','release/0.0.1',idir.user,idir.pass,idir.url)).rejects.toThrow()
+            return expect(gitObj.verify('feature/add-test-for-create-changeset-update-changelog','release/0.0.1',idir.user,idir.pass,idir.url)).rejects.toThrow()
        })
     });
  
