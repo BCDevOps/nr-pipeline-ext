@@ -23,10 +23,7 @@ describe("BasicJavaApplicationBuilder:", function() {
   });
 
   afterEach(function() {
-    ocApplyRecommendedLabelsStub.restore();
-    ocApplyAndBuildStub.restore();
-    gitVerifyStub.restore();
-    jiraCreateRfdStub.restore();
+    sandbox.restore();
   });
 
   context("When target is a 'master'...", function() {

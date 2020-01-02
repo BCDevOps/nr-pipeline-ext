@@ -25,11 +25,7 @@ describe("BasicJavaApplicationDeployer:", function() {
   });
 
   afterEach(function() {
-    ocApplyRecommendedLabelsStub.restore();
-    ocApplyAndDeployStub.restore();
-    ocImportImageStreamsStub.restore();
-    verifyBeforeDeploymentStub.restore();
-    jiraTransitionRFDpostDeploymentStub.restore();
+    sandbox.restore();
   });
 
   context("When 'CI' deployment ...", function() {
