@@ -11,7 +11,7 @@ describe("git module", function() {
 
          return gitObj.run(['--version']).then(proc=>{
             console.log(proc.stdout)
-            expect(proc.stdout).toBe("git version 2.21.0 (Apple Git-122)\n")
+            expect(proc.stdout).toBe("git version 2.21.0 (Apple Git-122.2)\n")
          })
       })
    });
@@ -38,7 +38,7 @@ describe("git module", function() {
        it.only("latest commit hash on master can be obtained", function() {
           const gitObj = new Git()
  
-          return gitObj.getLatestCommitOnMaster(idir.user,idir.pass,idir.url).then(commitHash=>{
+          return gitObj.getLatestCommitOnTarget(idir.user,idir.pass,idir.url, 'master').then(commitHash=>{
              expect(commitHash).toBeDefined()
           })
        })
@@ -65,7 +65,7 @@ describe("git module", function() {
     context("On running verify", function() {
        it.only("verify if branches can be merged", async function() {
           const gitObj = new Git()
-            return expect(gitObj.verify('feature/add-test-for-create-changeset-update-changelog','release/0.0.1',idir.user,idir.pass,idir.url)).rejects.toThrow()
+            return expect(gitObj.verify('master','release/0.0.1',idir.user,idir.pass,idir.url)).rejects.toThrow()
        })
     });
  
