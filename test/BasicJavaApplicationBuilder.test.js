@@ -116,7 +116,6 @@ describe("BasicJavaApplicationBuilder:", function() {
       // Verify
       sandbox.assert.calledOnce(builder.processTemplates);
       sandbox.assert.notCalled(jiraCreateRfdStub);
-      sandbox.assert.calledOnce(gitVerifyStub);
       sandbox.assert.calledOnce(ocApplyRecommendedLabelsStub);
       sandbox.assert.calledOnce(ocApplyAndBuildStub);
     });
@@ -136,7 +135,6 @@ describe("BasicJavaApplicationBuilder:", function() {
       // Verify
       sandbox.assert.calledOnce(builder.processTemplates);
       sandbox.assert.notCalled(jiraCreateRfdStub);
-      sandbox.assert.calledOnce(gitVerifyStub);
       sandbox.assert.calledOnce(ocApplyRecommendedLabelsStub);
       sandbox.assert.calledOnce(ocApplyAndBuildStub);
     });
