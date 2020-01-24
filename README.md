@@ -56,6 +56,7 @@ How to use :
    ```
    git merge-base remotes/origin/YOUR_BRANCH remotes/origin/TARGET 
    ```
+   
 11. InputDeployerVerify.js : This is a class which is invoked from the BasicJavaApplicationDeployer.js, basicOracleDatabaseDeployment.js and jiraEventListenerScriptforJenkins . This class verifies if the following Jira conditions are satisfied prior to Deployments:
 
     ``` 
