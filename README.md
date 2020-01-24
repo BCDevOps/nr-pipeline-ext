@@ -45,17 +45,18 @@ How to use :
   9. GitOperation.js : This is class and is used by other scripts to perform Git Operations
 
   10. GitVerification.js : This is a class (invoked from the BasicJavaApplicationBuilder and basicOracleDatabaseBuild.js ) which verifies if a bitbucket branch can be merged with the target branch in a pull request by verifying if the commit Hash on the target from which the current branch was created is still the same as the current commitHash on the target. If not, there have been new changes made on the target and you will need to update and rebase your branch using the following steps:
-    ```
+   
+   ```
     git ls-remote origin refs/heads/master #Returns the latest commit Hash on master
     git rebase LATEST_COMMIT_HASH
     git pull origin --rebase
     git config --global push.default simple
     git push -f
-   ```
-   Verify that the change is updated using:
-   
-   
-   `git merge-base remotes/origin/YOUR_BRANCH remotes/origin/TARGET`
+  ```
+  
+  Verify that the change is updated using:
+  
+  `git merge-base remotes/origin/YOUR_BRANCH remotes/origin/TARGET`
    
 11. InputDeployerVerify.js : This is a class which is invoked from the BasicJavaApplicationDeployer.js, basicOracleDatabaseDeployment.js and jiraEventListenerScriptforJenkins . This class verifies if the following Jira conditions are satisfied prior to Deployments:
 
