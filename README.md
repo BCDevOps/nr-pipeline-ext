@@ -18,14 +18,15 @@ How to use :
   7. CreateChangesetUpdateChangelog: This is a class which is called from the script ,generateChangeSetforOracleDB.js. It is used for creating empty changelog files and update the corresponding changelog.
 
   8. generateChangeSetforOracleDB.js: This script can be directly used from your repo. It can be used as follows (given that node knows generate should execute this script):
-
-    ``` 
+  
+  ```
     If migrations folder path is ../migrations ,run: npm run generate
     If migrations folder path is custom path ,run: npm run generate -- --migrations.dir=<custom_path_relative_to_.pipeline>
     For Help, run: npm run generate -- help 
-    ```
-
-    It asks a series of questions to create Repeatable or Versioned Migration changesets and update the respective changelog.
+    
+   ```
+   
+  It asks a series of questions to create Repeatable or Versioned Migration changesets and update the respective changelog.
     
     ```
     ? Do you want to add a new changeset(y/n, Press y for yes, any other key for no)?  y
@@ -37,7 +38,8 @@ How to use :
     ? What is the name of the database object you are creating/modifying? new_tes_package
 
     ```
-    Any special character like whitespace, #, - etc are converted to _ in the database object name and the database object name is used as the ID in the changelog configuration. If the script finds a changelog ID with the same object name, it is assumed that it should be a repeatable migration and therefore, the previous changeset can be updated or modified to run the change.
+    
+   Any special character like whitespace, #, - etc are converted to _ in the database object name and the database object name is used as the ID in the changelog configuration. If the script finds a changelog ID with the same object name, it is assumed that it should be a repeatable migration and therefore, the previous changeset can be updated or modified to run the change.
     The script assumes that the default path for scripts is in repo/migrations, if not, you will need to provide the path to the script.
 
   9. GitOperation.js : This is class and is used by other scripts to perform Git Operations
@@ -62,14 +64,16 @@ How to use :
        * RFD to DLVR (auto) should be approved
        * If manual RFD exists and blocks the RFD(auto), it should be resolved
        * If manual RFD exists and doesnt block the RFD(auto), it should be approved
-    
+    ```
+    ```
     ENV = test
        * RFC should be Authorized to Test
        * RFDs to DLVR (auto and manual) should be closed
        * RFD to Test (auto) should be approved
        * If manual RFD exists and blocks the RFD(auto), it should be resolved
        * If manual RFD exists and doesnt block the RFD(auto), it should be approved
-
+    ```
+    ```
      ENV = prod
        * RFC should be Authorized to Prod
        * RFDs to Test (auto and manual) should be closed
