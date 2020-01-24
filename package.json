@@ -25,6 +25,7 @@
       "@bcgov/pipeline-cli": "git+https://github.com/BCDevOps/pipeline-cli.git#release/v1.1",
       "chalk": "^3.0.0",
       "del": "^5.1.0",
+      "inquirer": "^7.0.3",
       "jira-connector": "^2.16.1",
       "liquibase": "0.0.3",
       "moment-timezone": "^0.5.27",
