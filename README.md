@@ -82,8 +82,10 @@ How to use :
 
 12. InputMergePr.js : This is a class invoked from jiraEventListenerScriptForMerge.js and is used to verify the following conditions prior to performing clean out operations in a Jenkins pipeline.
 
-     ```* RFC should be closed
-        * RFD to Prod should be closed ```
+     ```
+        * RFC should be closed
+        * RFD to Prod should be closed 
+     ```
 13. Jira.js : This is a class used by other modules to perform Jira Operations. This uses the jira-connector npm module.
 
 14. jiraEventListenerScriptForJenkins.js: This script is run by a jenkins event handler job to verify Jira events. This job sends an input signal to the pipeline waiting for approvals.
