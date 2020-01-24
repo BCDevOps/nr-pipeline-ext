@@ -53,9 +53,9 @@ How to use :
     git push -f
    ```
    Verify that the change is updated using:
-   ```
-   git merge-base remotes/origin/YOUR_BRANCH remotes/origin/TARGET 
-   ```
+   
+   
+   `git merge-base remotes/origin/YOUR_BRANCH remotes/origin/TARGET`
    
 11. InputDeployerVerify.js : This is a class which is invoked from the BasicJavaApplicationDeployer.js, basicOracleDatabaseDeployment.js and jiraEventListenerScriptforJenkins . This class verifies if the following Jira conditions are satisfied prior to Deployments:
 
@@ -88,8 +88,7 @@ How to use :
      ```
        * RFC should be closed
        * RFD to Prod should be closed
-
-    ```
+      ```
 13. Jira.js : This is a class used by other modules to perform Jira Operations. This uses the jira-connector npm module.
 
 14. jiraEventListenerScriptForJenkins.js: This script is run by a jenkins event handler job to verify Jira events. This job sends an input signal to the pipeline waiting for approvals.
