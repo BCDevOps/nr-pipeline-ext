@@ -23,15 +23,14 @@
    "homepage": "https://github.com/BCDevOps/nr-pipeline-ext#readme",
    "dependencies": {
       "@bcgov/pipeline-cli": "git+https://github.com/BCDevOps/pipeline-cli.git#release/v1.1",
-      "chalk": "^3.0.0",
-      "del": "^5.1.0",
       "inquirer": "^7.0.3",
       "jira-connector": "^2.16.1",
       "liquibase": "0.0.3",
       "moment-timezone": "^0.5.27",
       "pipeline-cli": "git+https://github.com/BCDevOps/pipeline-cli.git#release/v1.1",
       "replace-in-file": "^4.2.0",
-      "request": "^2.88.0"
+      "request": "^2.88.0",
+      "save": "^2.4.0"
    },
    "devDependencies": {
       "expect": "^24.9.0",
