@@ -2,9 +2,9 @@
 const expect = require("expect");
 const sinon = require("sinon");
 const Gitop = require('../lib/GitOperation')
-const idir = require("./idir.local.json");
 
-describe("GitOperation:", function() {
+describe("GitOperation: @slow", function() {
+   const idir = require("./idir.local.json");
    this.timeout(50000);
    // system test, requires credential from "./idir.local.json" (create one if not exists)
    context("prepare()", function() {
