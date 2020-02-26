@@ -9,7 +9,7 @@ describe("liquibase module", function() {
          const idir = require("./idir.local.json");
          const liquibaseObj = new Liquibase({drivers:[{groupId:'com.oracle.jdbc', artifactId: 'ojdbc8', version: '18.3.0.0'}], credentials: idir})
 
-         return liquibaseObj.run(['--version']).then(proc=>{
+         return liquibaseObj.run(['--version'], {"cwd": liquibaseObj.liquibaseHomeDir}).then(proc=>{
             expect(proc.stdout.split('\n')[1]).toBe('Liquibase Version: 3.8.0');
          })
       })

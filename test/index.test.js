@@ -5,7 +5,7 @@ const Jira = require('../lib/Jira');
 const sinon = require("sinon");
 const sandbox = sinon.createSandbox();
 
-const CONST = require('../lib/Constants');
+const CONST = require('../lib/constants');
 
 // root-level hooks below (for all test files)
 let jira = null;
