@@ -2,7 +2,7 @@
 const expect = require("expect");
 const sandbox = require('sinon').createSandbox();
 const {ENV} = require('../lib/constants');
-const {OpenShiftClientX} = require('pipeline-cli')
+const {OpenShiftClientX} = require('@bcgov/pipeline-cli')
 const BasicJavaApplicationClean = require('../lib/BasicJavaApplicationClean');
 
 describe("BasicJavaApplicationClean:", function() {

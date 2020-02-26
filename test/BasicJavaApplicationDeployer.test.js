@@ -1,7 +1,7 @@
 "use strict";
 const expect = require("expect");
 var sandbox = require('sinon').createSandbox();
-const {OpenShiftClientX} = require('pipeline-cli');
+const {OpenShiftClientX} = require('@bcgov/pipeline-cli');
 const Jira = require('../lib/Jira');
 const Verifier = require('../lib/InputDeployerVerify');
 const BasicJavaApplicationDeployer = require('../lib/BasicJavaApplicationDeployer');
