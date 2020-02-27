@@ -9,7 +9,10 @@
    "scripts": {
       "test": "nyc --reporter=text mocha",
       "coverage": "nyc --reporter=html mocha --reporter mochawesome",
-      "version": "echo \"node@$(node --version) ($(which node))\" && echo \"npm@$(npm --version) ($(which npm))\" && npm ls"
+      "version": "echo \"node@$(node --version) ($(which node))\" && echo \"npm@$(npm --version) ($(which npm))\" && npm ls",
+      "test:watch:single": "mocha -R list -w $1",
+      "test:ci": "nyc --reporter=text mocha --grep @slow --invert",
+      "test:watch:ci": "mocha -w --grep @slow --invert"
    },
    "repository": {
       "type": "git",

@@ -6,7 +6,7 @@ const MavenRepository = require('../lib/MavenRepository')
 
 const fakeConfig = {url: "fakeUrl", user: "fakeUser", password: "fakePassword"}
 
-describe.only("schemacrawler module", function() {
+describe.skip("schemacrawler module", function() {
    this.timeout(50000);
    context("On Schemacrawler setup", function() {
       it("install without ojdbc", function() {

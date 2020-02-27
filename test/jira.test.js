@@ -34,7 +34,7 @@ afterEach("Completely restore all fakes created through the sandbox", function()
 
 describe("Jira", function() {
    context("RFD", function() {
-      it("should throw error", async function() {
+      it.skip("should throw error", async function() {
          const issues=new Map();
          const links = [];
 
