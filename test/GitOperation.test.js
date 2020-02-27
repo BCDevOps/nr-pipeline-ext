@@ -58,6 +58,8 @@ describe("GitOperation:", function() {
             const pwd = path.join(basedir, 'a')
             //console.log(`\ngit init ${pwd}`)
             await childProcess('git', ['init', pwd])
+            await childProcess('git', ['config', '--local', 'user.email', 'you@example.com'],{cwd:pwd})
+            await childProcess('git', ['config', '--local', 'user.name', 'Your Name'],{cwd:pwd})
             fs.writeFileSync(path.join(pwd, 'hello'),'Hello', {encoding:'utf8'})
             await childProcess('git', ['add', 'hello'],{cwd:pwd})
             await childProcess('git', ['commit', '-m', '1st Commit'],{cwd:pwd})
@@ -73,8 +75,11 @@ describe("GitOperation:", function() {
             return basedir;
          })
          .then(async (basedir)=>{
-            await childProcess('git', ['clone', path.join(basedir, 'a'), path.join(basedir, 'b')])
-            return path.join(basedir, 'b')
+            const pwd = path.join(basedir, 'b')
+            await childProcess('git', ['clone', path.join(basedir, 'a'), pwd])
+            await childProcess('git', ['config', '--local', 'user.email', 'you@example.com'],{cwd:pwd})
+            await childProcess('git', ['config', '--local', 'user.name', 'Your Name'],{cwd:pwd})
+            return pwd
          })
          .then((pwd)=>{
             const settings = {dir: pwd, branch:{name:'feature/a'}, change:{target:'master'}}
@@ -101,6 +106,8 @@ describe("GitOperation:", function() {
             const pwd = path.join(basedir, 'a')
             //console.log(`\ngit init ${pwd}`)
             await childProcess('git', ['init', pwd])
+            await childProcess('git', ['config', '--local', 'user.email', 'you@example.com'],{cwd:pwd})
+            await childProcess('git', ['config', '--local', 'user.name', 'Your Name'],{cwd:pwd})
             fs.writeFileSync(path.join(pwd, 'hello'),'Hello', {encoding:'utf8'})
             await childProcess('git', ['add', 'hello'],{cwd:pwd})
             await childProcess('git', ['commit', '-m', '1st Commit'],{cwd:pwd})
@@ -112,8 +119,11 @@ describe("GitOperation:", function() {
             return basedir;
          })
          .then(async (basedir)=>{
-            await childProcess('git', ['clone', path.join(basedir, 'a'), path.join(basedir, 'b')])
-            return path.join(basedir, 'b')
+            const pwd = path.join(basedir, 'b')
+            await childProcess('git', ['clone', path.join(basedir, 'a'), pwd])
+            await childProcess('git', ['config', '--local', 'user.email', 'you@example.com'],{cwd:pwd})
+            await childProcess('git', ['config', '--local', 'user.name', 'Your Name'],{cwd:pwd})
+            return pwd
          })
          .then((pwd)=>{
             const settings = {dir: pwd, url:'file://localhost/abc.git', credentials:{username:'test', password:'123'},  branch:{name:'feature/a'}, change:{target:'master'}}
