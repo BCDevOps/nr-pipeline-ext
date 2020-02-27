@@ -20,7 +20,7 @@ describe("previousEnv:", function() {
 describe("childProcess:", function() {
    this.timeout(50000);
    context("Spawn bash command operations", function() {
-      it("Can run 'ls' command", function() {
+      it.skip("Can run 'ls' command", function() {
          return childProcess("ls")
          .then((result) => {
             expect(result).toBe(0);

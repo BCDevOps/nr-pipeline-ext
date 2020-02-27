@@ -2,10 +2,10 @@
 const expect = require("expect");
 const Liquibase = require('../lib/Liquibase')
 
-describe("liquibase module", function() {
+describe.skip("liquibase module", function() {
    this.timeout(50000);
    context("On Liquibase setup", function() {
-      it.only("install can be done", function() {
+      it("install can be done", function() {
          const idir = require("./idir.local.json");
          const liquibaseObj = new Liquibase({drivers:[{groupId:'com.oracle.jdbc', artifactId: 'ojdbc8', version: '18.3.0.0'}], credentials: idir})
 

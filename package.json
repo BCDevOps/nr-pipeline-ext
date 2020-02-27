@@ -9,7 +9,10 @@
    "scripts": {
       "test": "nyc --reporter=text mocha",
       "coverage": "nyc --reporter=html mocha --reporter mochawesome",
-      "version": "echo \"node@$(node --version) ($(which node))\" && echo \"npm@$(npm --version) ($(which npm))\" && npm ls"
+      "version": "echo \"node@$(node --version) ($(which node))\" && echo \"npm@$(npm --version) ($(which npm))\" && npm ls",
+      "test:watch:single": "mocha -R list -w $1",
+      "test:ci": "nyc --reporter=text mocha --grep @slow --invert",
+      "test:watch:ci": "mocha -w --grep @slow --invert"
    },
    "repository": {
       "type": "git",
@@ -27,12 +30,12 @@
       "jira-connector": "^2.16.1",
       "liquibase": "0.0.3",
       "moment-timezone": "^0.5.27",
-      "pipeline-cli": "git+https://github.com/BCDevOps/pipeline-cli.git#release/v1.1",
       "replace-in-file": "^4.2.0",
       "request": "^2.88.0",
       "save": "^2.4.0"
    },
    "devDependencies": {
+      "chalk": "^2.0.0",
       "expect": "^24.9.0",
       "mocha": "^6.2.2",
       "mochawesome": "^4.1.0",
