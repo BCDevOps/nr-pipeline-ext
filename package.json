@@ -35,6 +35,7 @@
       "save": "^2.4.0"
    },
    "devDependencies": {
+      "chalk": "^2.0.0",
       "expect": "^24.9.0",
       "mocha": "^6.2.2",
       "mochawesome": "^4.1.0",
