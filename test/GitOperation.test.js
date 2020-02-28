@@ -44,7 +44,7 @@ describe("GitOperation:", function() {
       })
    });
 
-   context(`verify()`, function() {
+   context(`isTargetBranchOutofSync()`, function() {
       it("is not up to date", function() {
          const fs = require('fs');
          return expect(
@@ -88,7 +88,7 @@ describe("GitOperation:", function() {
             stub.callsFake( () => {
                return Promise.resolve();
             });
-            return git.verify().finally(()=>{
+            return git.isTargetBranchOutofSync().finally(()=>{
                git.clear()
             })
          })
@@ -128,7 +128,7 @@ describe("GitOperation:", function() {
          .then((pwd)=>{
             const settings = {dir: pwd, url:'file://localhost/abc.git', credentials:{username:'test', password:'123'},  branch:{name:'feature/a'}, change:{target:'master'}}
             const git = new GitClient(settings);
-            return git.verify().finally((val)=>{
+            return git.isTargetBranchOutofSync().finally((val)=>{
                git.clear()
             })
          })
