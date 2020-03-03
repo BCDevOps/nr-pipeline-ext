@@ -13,7 +13,7 @@ Contributions are welcome, but please review this document before making any cha
 
 ## Pull Requests
 * We use the [Forking process](https://guides.github.com/activities/forking/) in our development. [Here](https://blog.scottlowe.org/2015/01/27/using-fork-branch-git-workflow/) are more details and best practices
-* Follow our Lining rules
+* Follow our Linting rules
 * Maintain quality
 
 ## Git Commit Messages styleguide
