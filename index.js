@@ -10,13 +10,13 @@ const CreateChangesetUpdateChangelog = require('./lib/CreateChangesetUpdateChang
 const BasicJavaApplicationClean = require('./lib/BasicJavaApplicationClean')
 
 module.exports = {
-  Jira,
-  Liquibase,
-  SchemaCrawler,
-  CONST,
-  BasicJavaApplicationBuilder,
-  BasicJavaApplicationDeployer,
-  CreateChangesetUpdateChangelog,
-  BasicJavaApplicationClean,
-  InputDeployerVerify
+    Jira,
+    Liquibase,
+    SchemaCrawler,
+    CONST,
+    BasicJavaApplicationBuilder,
+    BasicJavaApplicationDeployer,
+    CreateChangesetUpdateChangelog,
+    BasicJavaApplicationClean,
+    InputDeployerVerify,
 }
