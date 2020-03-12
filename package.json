@@ -14,7 +14,7 @@
       "test:ci": "nyc --reporter=text mocha --grep @slow --invert",
       "test:watch:ci": "mocha -w --grep @slow --invert",
       "eslint": "./node_modules/.bin/eslint --ignore-path .gitignore .",
-      "prettier": "./node_modules/.bin/prettier  '**/*.js' --ignore-path '.gitignore' "
+      "prettier": "./node_modules/.bin/prettier  '**/*.js' --ignore-path '.gitignore' --check"
    },
    "repository": {
       "type": "git",
