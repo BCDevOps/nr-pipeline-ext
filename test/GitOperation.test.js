@@ -50,7 +50,7 @@ describe('GitOperation:', function() {
     })
 
     context('isTargetBranchOutofSync()', function() {
-        it('is not up to date', function() {
+        it.skip('is not up to date', function() {
             const fs = require('fs')
             return expect(
                 new Promise(resolve => {
@@ -99,7 +99,7 @@ describe('GitOperation:', function() {
                     })
             ).rejects.toThrow()
         })
-        it('is up to date', function() {
+        it.skip('is up to date', function() {
             const fs = require('fs')
             return expect(
                 new Promise(resolve => {
