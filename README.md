@@ -1,6 +1,8 @@
 # nr-pipeline-ext
 Natural Resource (IIT) Module/Extension for pipeline-cli
 
+![CI](https://github.com/BCDevOps/nr-pipeline-ext/workflows/CI/badge.svg) ![Eslinting](https://github.com/BCDevOps/nr-pipeline-ext/workflows/Eslinting/badge.svg) ![Prettier](https://github.com/BCDevOps/nr-pipeline-ext/workflows/Prettier/badge.svg)
+
 How to use :
 
   1. BasicJavaApplicationBuilder.js : This is a class which needs to be called from within the build.js file located in the .pipeline folder in your repository . It is used to build openshift objects for a Java application and also create RFD tickets given an RFC exists.
@@ -18,16 +20,16 @@ How to use :
   7. CreateChangesetUpdateChangelog: This is a class which is called from the script ,generateChangeSetforOracleDB.js. It is used for creating empty changelog files and update the corresponding changelog.
 
   8. generateChangeSetforOracleDB.js: This script can be directly used from your repo. It can be used as follows (given that node knows generate should execute this script):
-  
+
   ```
     If migrations folder path is ../migrations ,run: npm run generate
     If migrations folder path is custom path ,run: npm run generate -- --migrations.dir=<custom_path_relative_to_.pipeline>
-    For Help, run: npm run generate -- help 
-    
+    For Help, run: npm run generate -- help
+
    ```
-   
+
   It asks a series of questions to create Repeatable or Versioned Migration changesets and update the respective changelog.
-    
+
     ```
     ? Do you want to add a new changeset(y/n, Press y for yes, any other key for no)?  y
     ? What type of migration would you want to do? Repeatable
@@ -38,14 +40,14 @@ How to use :
     ? What is the name of the database object you are creating/modifying? new_tes_package
 
     ```
-    
+
    Any special character like whitespace, #, - etc are converted to _ in the database object name and the database object name is used as the ID in the changelog configuration. If the script finds a changelog ID with the same object name, it is assumed that it should be a repeatable migration and therefore, the previous changeset can be updated or modified to run the change.
     The script assumes that the default path for scripts is in repo/migrations, if not, you will need to provide the path to the script.
 
   9. GitOperation.js : This is class and is used by other scripts to perform Git Operations
 
   10. GitVerification.js : This is a class (invoked from the BasicJavaApplicationBuilder and basicOracleDatabaseBuild.js ) which verifies if a bitbucket branch can be merged with the target branch in a pull request by verifying if the commit Hash on the target from which the current branch was created is still the same as the current commitHash on the target. If not, there have been new changes made on the target and you will need to update and rebase your branch using the following steps:
-   
+
    ```
     git ls-remote origin refs/heads/master #Returns the latest commit Hash on master
     git rebase LATEST_COMMIT_HASH
@@ -53,16 +55,16 @@ How to use :
     git config --global push.default simple
     git push -f
   ```
-  
+
   Verify that the change is updated using:
-  
+
   `git merge-base remotes/origin/YOUR_BRANCH remotes/origin/TARGET`
-   
+
 11. InputDeployerVerify.js : This is a class which is invoked from the BasicJavaApplicationDeployer.js, basicOracleDatabaseDeployment.js and jiraEventListenerScriptforJenkins . This class verifies if the following Jira conditions are satisfied prior to Deployments:
 
-    ``` 
+    ```
     ENV = dlvr or int
-       * RFC should be Authorized to Int 
+       * RFC should be Authorized to Int
        * RFD to DLVR (auto) should be approved
        * If manual RFD exists and blocks the RFD(auto), it should be resolved
        * If manual RFD exists and doesnt block the RFD(auto), it should be approved
@@ -84,7 +86,7 @@ How to use :
 
      ```
         * RFC should be closed
-        * RFD to Prod should be closed 
+        * RFD to Prod should be closed
      ```
 13. Jira.js : This is a class used by other modules to perform Jira Operations. This uses the jira-connector npm module.
 

@@ -12,7 +12,9 @@
       "version": "echo \"node@$(node --version) ($(which node))\" && echo \"npm@$(npm --version) ($(which npm))\" && npm ls",
       "test:watch:single": "mocha -R list -w $1",
       "test:ci": "nyc --reporter=text mocha --grep @slow --invert",
-      "test:watch:ci": "mocha -w --grep @slow --invert"
+      "test:watch:ci": "mocha -w --grep @slow --invert",
+      "eslint": "./node_modules/.bin/eslint --ignore-path .gitignore .",
+      "prettier": "./node_modules/.bin/prettier  '**/*.js' --ignore-path '.gitignore' --check"
    },
    "repository": {
       "type": "git",
@@ -36,11 +38,20 @@
    },
    "devDependencies": {
       "chalk": "^2.0.0",
+      "eslint": "^6.8.0",
+      "eslint-config-prettier": "^6.10.0",
+      "eslint-config-standard": "^14.1.0",
+      "eslint-plugin-import": "^2.20.1",
+      "eslint-plugin-node": "^11.0.0",
+      "eslint-plugin-prettier": "^3.1.2",
+      "eslint-plugin-promise": "^4.2.1",
+      "eslint-plugin-standard": "^4.0.1",
       "expect": "^24.9.0",
       "mocha": "^6.2.2",
       "mochawesome": "^4.1.0",
       "nock": "^11.7.0",
       "nyc": "^14.1.1",
+      "prettier": "^1.19.1",
       "sinon": "^7.5.0"
    }
 }
