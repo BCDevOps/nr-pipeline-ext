@@ -34,7 +34,8 @@
       "moment-timezone": "^0.5.27",
       "replace-in-file": "^4.2.0",
       "request": "^2.88.0",
-      "save": "^2.4.0"
+      "save": "^2.4.0",
+      "winston": "^3.2.1"
    },
    "devDependencies": {
       "chalk": "^2.0.0",
