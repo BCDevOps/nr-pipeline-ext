@@ -23,6 +23,7 @@ const logSettings = {
                         timestamp(),
                         format.align(),
                         format.prettyPrint(),
+                        format.splat(),
                         format.colorize({
                             all: true, // this is important otherwise only 'level' will be colored, not the message.
                             colors: {
