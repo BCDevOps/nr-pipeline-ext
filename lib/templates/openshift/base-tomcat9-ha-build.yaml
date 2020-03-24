@@ -1,0 +1,76 @@
+apiVersion: v1
+kind: Template
+metadata: {}
+objects:
+- apiVersion: image.openshift.io/v1
+  kind: ImageStream
+  metadata:
+    name: tomcat9
+    labels:
+      shared: "true"
+  spec:
+    lookupPolicy:
+      local: false
+    tags:
+      - annotations: null
+        from:
+          kind: DockerImage
+          name: 'tomcat:9.0.27-jdk8-openjdk'
+        generation: 1
+        importPolicy: {}
+        name: 9.0.27-jdk8-openjdk
+        referencePolicy:
+          type: Local
+  status:
+    dockerImageRepository: ''
+- apiVersion: image.openshift.io/v1
+  kind: ImageStream
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewBuild
+    creationTimestamp: null
+    labels:
+      shared: "true"
+    name: ha-tomcat9
+  spec:
+    lookupPolicy:
+      local: false
+  status:
+    dockerImageRepository: ""
+- apiVersion: build.openshift.io/v1
+  kind: BuildConfig
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewBuild
+    creationTimestamp: null
+    labels:
+      shared: "true"
+    name: ha-tomcat9
+  spec:
+    nodeSelector: null
+    runPolicy: SerialLatestOnly
+    output:
+      to:
+        kind: ImageStreamTag
+        name: ha-tomcat9:9.0.30
+    postCommit: {}
+    resources: {}
+    source:
+      contextDir: docker
+      git:
+        ref: feature/add-proxy-host-var-check-catalina.sh
+        uri: https://github.com/BCDevOps/ha-tomcat9.git
+      type: Git
+    strategy:
+      dockerStrategy:
+        imageOptimizationPolicy: SkipLayers
+        from:
+          kind: ImageStreamTag
+          name: tomcat9:9.0.27-jdk8-openjdk
+      type: Docker
+    triggers:
+    - type: ConfigChange
+    - imageChange: {}
+      type: ImageChange
+  status:
+    lastVersion: 0
