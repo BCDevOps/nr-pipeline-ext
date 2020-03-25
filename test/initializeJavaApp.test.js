@@ -4,10 +4,10 @@ const expect = require('expect')
 const initializerObj = new Initializer()
 const fs = require('fs')
 const { spawnSync } = require('child_process')
-const path = require('path')
+// const path = require('path')
 // const { childProcess } = require('./util-functions')
 
-describe('initialize module', function() {
+describe.skip('initialize module', function() {
     this.timeout(50000)
     context('On calling initialize', function() {
         it.only('ear folder is not present', async function() {
@@ -17,14 +17,14 @@ describe('initialize module', function() {
     })
 
     context('On calling initialize', function() {
-        it.only('ear folder is present', async function() {
+        it('ear folder is present', async function() {
             fs.mkdirSync('../ear')
             expect(await initializerObj.__isDir('../ear')).toBe(true)
         })
     })
 
     context('On calling initialize', function() {
-        it.only('ear folder is created', async function() {
+        it('ear folder is created', async function() {
             spawnSync('rm', ['-rf', '../ear'])
             spawnSync('rm', ['-rf', '.pipeline'])
             fs.mkdirSync('../src')
