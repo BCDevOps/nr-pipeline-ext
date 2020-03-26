@@ -3,14 +3,14 @@ apiVersion: template.openshift.io/v1
 kind: Template
 objects:
 - apiVersion: v1
- kind: ImageStream
- metadata:
-   annotations: {}
-   creationTimestamp: null
-   labels:
-     shared: "true"
-   name: "${OPENJDK18_IMAGE_NAME}"
- spec:
+  kind: ImageStream
+  metadata:
+    annotations: {}
+    creationTimestamp: null
+    labels:
+      shared: "true"
+    name: "${OPENJDK18_IMAGE_NAME}"
+  spec:
    lookupPolicy:
      local: true
    tags:
@@ -76,7 +76,7 @@ objects:
         name: bitbucket-account
       type: Git
       contextDir: "ear"
-     configMaps:
+      configMaps:
        - configMap:
            name: mvn-settings
          destinationDir: .m2
