@@ -25,6 +25,26 @@ objects:
 - apiVersion: v1
   kind: ImageStream
   metadata:
+    annotations: {}
+    creationTimestamp: null
+    labels:
+      shared: "true"
+    name: "${TOMCAT_IMAGE_NAME}"
+  spec:
+   lookupPolicy:
+     local: true
+   tags:
+   - annotations: null
+     from:
+       kind: DockerImage
+       name: "docker-registry.default.svc:5000/perrsi-tools/${TOMCAT_IMAGE_NAME}:${TOMCAT_IMAGE_TAG}"
+     importPolicy: {}
+     name: "${TOMCAT_IMAGE_TAG}"
+     referencePolicy:
+       type: Local
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
     annotations: null
     creationTimestamp: null
     labels:
@@ -187,3 +207,5 @@ parameters:
   description: packaging from pom.xml
 - name: ARTIFACT_VERSION
   description: artifact version from pom.xml
+- name: ENV_PROXY_HOST
+  description: proxy host configuration
