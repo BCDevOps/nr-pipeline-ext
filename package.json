@@ -35,6 +35,7 @@
       "moment-timezone": "^0.5.27",
       "replace-in-file": "^4.2.0",
       "request": "^2.88.0",
+      "rsync": "^0.6.1",
       "save": "^2.4.0",
       "winston": "^3.2.1"
    },
