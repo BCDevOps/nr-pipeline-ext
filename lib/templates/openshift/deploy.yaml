@@ -12,11 +12,11 @@ objects:
   kind: ServiceAccount
   metadata:
     creationTimestamp: null
-    name: tomcat
+    name: ${NAME}${SUFFIX}-tomcat
 - kind: Role
   apiVersion: rbac.authorization.k8s.io/v1
   metadata:
-    name: tomcat
+    name: ${NAME}${SUFFIX}-tomcat
   rules:
   - apiGroups: [""] # "" indicates the core API group
     resources: ["pods"]
@@ -25,14 +25,14 @@ objects:
   kind: RoleBinding
   metadata:
     creationTimestamp: null
-    name: tomcat
+    name: ${NAME}${SUFFIX}-tomcat
   roleRef:
     apiGroup: rbac.authorization.k8s.io
     kind: Role
-    name: tomcat
+    name: ${NAME}${SUFFIX}-tomcat
   subjects:
   - kind: ServiceAccount
-    name: tomcat
+    name: ${NAME}${SUFFIX}-tomcat
 - apiVersion: v1
   kind: ImageStream
   metadata:
@@ -165,7 +165,7 @@ objects:
               #   name: classes
               # - mountPath: /webade-properties
               #   name: webade-properties
-        serviceAccountName: 'tomcat'
+        serviceAccountName: "${NAME}${SUFFIX}-tomcat"
         containers:
           - name:  ${NAME}
             image: " "
