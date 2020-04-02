@@ -29,7 +29,7 @@ pipeline {
         }
 
         stage('Deploy App Changes to DEV') {
-            agent { label 'build' } // Run on jenkins slave 'build'
+            agent { label 'deploy' } // Run on jenkins slave 'build'
             steps {
                 script {
                 // Use Pipeline-cli node project to deploy the wiof-build image to Dev Stage 
@@ -60,7 +60,7 @@ pipeline {
 
 
         stage('Deploy App Changes to DLVR') {
-            agent { label 'build' } // Run on jenkins slave 'build'
+            agent { label 'deploy' } // Run on jenkins slave 'build'
             when {
                 expression { return env.CHANGE_TARGET == 'master';}
             }
