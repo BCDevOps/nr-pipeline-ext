@@ -1,0 +1,27 @@
+#!/bin/sh
+set +x
+type -t nvm && nvm deactivate
+export NVM_DIR="$(git rev-parse --show-toplevel)/.nvm"
+if [ ! -f "$NVM_DIR/nvm.sh" ]; then
+  mkdir -p "${NVM_DIR}"
+  curl -sSL -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash &>/dev/null
+fi
+source "$NVM_DIR/nvm.sh" &>/dev/null
+METHOD=script nvm install --no-progress &>/dev/null
+nvm use &>/dev/null
+
+if [ "$1" == "ci" ]; then
+  CHECKSUM=$(printf "100644 package.json $(git hash-object -t blob package.json)\n100644 package-lock.json $(git hash-object -t blob package-lock.json)\n" | git hash-object -t blob --stdin)
+  #echo "CHECKSUM=${CHECKSUM}"
+  mkdir -p /tmp/npm-package-cache
+  if [ ! -f "/tmp/npm-package-cache/${CHECKSUM}.tgz" ]; then
+    npm "$@"
+    tar -zcf "/tmp/npm-package-cache/${CHECKSUM}.tgz" -C node_modules .
+  else
+    rm -rf node_modules
+    mkdir -p node_modules
+    tar -zxf "/tmp/npm-package-cache/${CHECKSUM}.tgz" -C node_modules
+  fi
+else
+  exec npm "$@"
+fi

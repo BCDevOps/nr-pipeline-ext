@@ -187,3 +187,6 @@ parameters:
   description: packaging from pom.xml
 - name: ARTIFACT_VERSION
   description: artifact version from pom.xml
+- name: ENV_PROXY_HOST
+  description: proxy host configuration
+

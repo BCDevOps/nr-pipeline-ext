@@ -74,14 +74,25 @@ objects:
       as-copy-of: ${NAME}-webade-connection-generic-jar
   stringData:
     webade-connection-4.2.0.jar: ''
-# - kind: Secret
-#   apiVersion: v1
-#   metadata:
-#     name: "${NAME}${SUFFIX}-webade-properties"
-#     annotations:
-#       as-copy-of: ${NAME}-webade-connection-properties
-#   stringData:
-#     WebADEConnection.properties: ''
+	- kind: Secret	
+  apiVersion: v1	
+  metadata:	
+    name: "${NAME}${SUFFIX}-wallet"	
+    annotations:	
+      as-copy-of: ${NAME}-wallet	
+  stringData:	
+    keystore.p12 : ''	
+    ojdbc.properties: ''	
+    tnsnames.ora: ''	
+    truststore.p12: ''
+- kind: Secret
+  apiVersion: v1
+  metadata:
+    name: "${NAME}${SUFFIX}-webade-properties"
+    annotations:
+      as-copy-of: ${NAME}-webade-connection-properties
+  stringData:
+    WebADEConnection.properties: ''
 - kind: Service
   apiVersion: v1
   metadata:
@@ -111,7 +122,7 @@ objects:
     host: "${HOST}"
     port:
       targetPort: 8080-tcp
-    path: "/${WEBAPP_NAME}/"
+    path: "/${ROUTE_PATH}/"
     to:
       kind: Service
       name: "${NAME}${SUFFIX}"
@@ -154,17 +165,16 @@ objects:
             command:
               - "bash"
               - "-c"
-              - cp /usr/local/tomcat/webapps/${WEBAPP_NAME}/WEB-INF/lib/*.jar /newwebade && cp /webade/* /newwebade  
-              #&& cp -r /usr/local/tomcat/webapps/irs/WEB-INF/classes/* /classes && cp /webade-properties/* /classes
+              - cp /usr/local/tomcat/webapps/${WEBAPP_NAME}/WEB-INF/lib/*.jar /newwebade && cp /webade/* /newwebade  && cp -r /usr/local/tomcat/webapps/${WEBAPP_NAME}/WEB-INF/classes/* /classes && cp /webade-properties/* /classes
             volumeMounts:
               - mountPath: /newwebade
                 name: newwebade 
               - mountPath: /webade
                 name: webade
-              # - mountPath: /classes
-              #   name: classes
-              # - mountPath: /webade-properties
-              #   name: webade-properties
+              - mountPath: /classes
+                name: classes
+              - mountPath: /webade-properties
+                name: webade-properties
         serviceAccountName: "${NAME}${SUFFIX}-tomcat"
         containers:
           - name:  ${NAME}
@@ -184,6 +194,10 @@ objects:
             env:
               - name: PORT
                 value: "8080"
+              - name: PROXY_HOST	
+                value: ${ENV_PROXY_HOST}	
+              - name: TNS_ADMIN	
+                value: /usr/local/tomcat/wallet/
               - name: OPENSHIFT_KUBE_PING_LABELS
                 value: "deploymentConfig=${NAME}${SUFFIX}"
               - name: OPENSHIFT_KUBE_PING_NAMESPACE
@@ -191,7 +205,27 @@ objects:
                   fieldRef:
                     fieldPath: metadata.namespace
               - name: CATALINA_OPTS
-                value: "-Djava.security.egd=file:/dev/./urandom -agentlib:jdwp=transport=dt_socket,address=8090,server=y,suspend=n" 
+                value: "-Djava.security.egd=file:/dev/./urandom -agentlib:jdwp=transport=dt_socket,address=8090,server=y,suspend=n"
+            livenessProbe:
+              failureThreshold: 3
+              httpGet:
+                path: "${ROUTE_PATH}/${INDEX}"
+                port: 8080
+                scheme: HTTP
+              initialDelaySeconds: 90
+              periodSeconds: 10
+              successThreshold: 1
+              timeoutSeconds: 3
+            readinessProbe:
+              failureThreshold: 3
+              httpGet:
+                path: "${ROUTE_PATH}/${INDEX}"
+                port: 8080
+                scheme: HTTP
+              initialDelaySeconds: 45
+              periodSeconds: 10
+              successThreshold: 1
+              timeoutSeconds: 2
             volumeMounts:   
               - mountPath: /usr/local/tomcat/webapps/${WEBAPP_NAME}/WEB-INF/lib/
                 name: newwebade
@@ -199,8 +233,8 @@ objects:
                 name: ${NAME}${SUFFIX}-log-pvc
               - mountPath: /apps_data/${NAME}/
                 name: ${NAME}${SUFFIX}-app-data
-              # - mountPath: /usr/local/tomcat/webapps/irs/WEB-INF/classes
-              #   name: classes
+              - mountPath: /usr/local/tomcat/webapps/${WEBAPP_NAME}/WEB-INF/classes
+                name: classes
               
         volumes:
          - emptyDir: {}
@@ -210,9 +244,9 @@ objects:
              secretName: ${NAME}${SUFFIX}-webade-jar
          - emptyDir: {}
            name: classes
-        #  - name: webade-properties
-        #    secret:
-        #      secretName: ${NAME}${SUFFIX}-webade-properties
+         - name: webade-properties
+           secret:
+             secretName: ${NAME}${SUFFIX}-webade-properties
          - name: ${NAME}${SUFFIX}-log-pvc
            persistentVolumeClaim:
              claimName: ${NAME}${SUFFIX}-log-pvc-vol
@@ -228,6 +262,13 @@ parameters:
   description: The tag given to the built image.
 - name: HOST
 - name: LOG_PVC_SIZE
+- name: ROUTE_PATH
 - name: APPDATA_PVC_SIZE
 - name: WEBAPP_NAME
   description: folder name under /usr/local/tomcat/webapps, can be ${NAME} or pub#${NAME} based on type of app
+- name: ENV_PROXY_HOST
+  description: proxy host configuration
+- name: INDEX
+  description: index page for application
+
+
