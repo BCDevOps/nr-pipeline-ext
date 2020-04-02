@@ -1,0 +1,169 @@
+pipeline {
+    agent none
+    options {
+        disableResume()
+    }
+    
+    stages {           
+        stage('Build') {
+            agent { label 'build' }
+            steps {
+                echo "Aborting all running jobs ..."
+                script {
+                    abortAllPreviousBuildInProgress(currentBuild)
+                    JIRA_URL="https://bwa.nrs.gov.bc.ca/int/jira" // Define Jira URL 
+                    BITBUCKET_URL="https://bwa.nrs.gov.bc.ca/int/stash" // Define Bitbucket URL
+                     // Extract Parameters such as Project Name and Repo name from Bitbucket Repo URL
+                    PROJECT_NAME=sh(script: "set +x && echo ${GIT_URL} | cut -d '/' -f7",  returnStdout: true).trim() 
+                    REPO_NAME=sh(script: "set +x && echo ${GIT_URL} | cut -d '/' -f8 | cut -d '.' -f1",  returnStdout: true).trim()
+                    PR_NO = sh ( script: "set +x && echo ${BRANCH_NAME} | cut -d '-' -f2", returnStdout: true).trim()
+                   
+                }
+                script {    
+                    // Use Pipeline-cli node project to build the open shift images, wiof-app-build ( open jdk image to build code with maven ) and wiof-build ( jboss web server image to host the web application ) 
+                    echo "Building Openshift Images..." 
+                    sh "cd .pipeline && ${WORKSPACE}/npmw ci && DEBUG='info:*' ${WORKSPACE}/npmw run build --  --env=build --pr=${CHANGE_ID} --git.branch.name=${CHANGE_BRANCH} --git.branch.merge=${CHANGE_BRANCH} --git.branch.remote=${CHANGE_BRANCH} --git.url=${GIT_URL} --git.change.target=${CHANGE_TARGET}"
+                   
+                }
+            }
+        }
+
+        stage('Deploy App Changes to DEV') {
+            agent { label 'build' } // Run on jenkins slave 'build'
+            steps {
+                script {
+                // Use Pipeline-cli node project to deploy the wiof-build image to Dev Stage 
+                echo "Deploying to DEV ..."
+                sh "cd .pipeline && ${WORKSPACE}/npmw ci && DEBUG='info:*' ${WORKSPACE}/npmw run deploy -- --pr=${CHANGE_ID} --env=dev --git.branch.name=${BRANCH_NAME} --git.branch.merge=${CHANGE_BRANCH} --git.branch.remote=${CHANGE_BRANCH} --git.url=${GIT_URL}" 
+             }
+           }
+        }
+
+         stage('Approval For DLVR in Jira') {
+            agent { label 'deploy' }   
+            when {
+                expression { return env.CHANGE_TARGET == 'master';}
+                 beforeInput true;
+            }  
+            input {
+                message "Are all the RFDs to DLVR Approved/Resolved, RFC Authorized to DLVR?"
+                id "Jira-DLVR"
+                parameters { }
+                submitter "SYSTEM"
+            }
+             steps {
+                   script {
+                      echo "Approved"
+               }
+             }
+         }
+
+
+        stage('Deploy App Changes to DLVR') {
+            agent { label 'build' } // Run on jenkins slave 'build'
+            when {
+                expression { return env.CHANGE_TARGET == 'master';}
+            }
+            steps {
+                script {
+                // Use Pipeline-cli node project to deploy the wiof-build image to Dev Stage 
+                echo "Deploying to DLVR ..."
+                sh "cd .pipeline && ${WORKSPACE}/npmw ci && DEBUG='info:*' ${WORKSPACE}/npmw run deploy -- --pr=${CHANGE_ID} --env=dlvr --git.branch.name=${BRANCH_NAME} --git.branch.merge=${CHANGE_BRANCH} --git.branch.remote=${CHANGE_BRANCH} --git.url=${GIT_URL}"  
+             }
+           }
+        }
+
+        stage('Approval For TEST in Jira') {
+            agent { label 'deploy' }   
+            when {
+                expression { return env.CHANGE_TARGET == 'master';}
+                 beforeInput true;
+            }  
+            input {
+                message "Are all the RFDs to TEST Approved/Resolved, all RFDs to DLVR closed and RFC Authorized to TEST ?"
+                id "Jira-TEST"
+                parameters { }
+                submitter "SYSTEM"
+            }
+             steps {
+                   script {
+                      echo "Approved"
+               }
+             }
+         }
+        
+        stage('Deploy App Changes to TEST') {             
+            agent { label 'deploy' } 
+            when {
+                // Run Stage only if Pull Request is to master branch
+                expression { return env.CHANGE_TARGET == 'master';}
+                beforeInput true;
+            }                        
+            steps {
+                script {
+                // Use Pipeline-cli node project to deploy the wiof-build image to Test Stage 
+                echo "Deploying to Test ..."
+                sh "cd .pipeline && ${WORKSPACE}/npmw ci && DEBUG='info:*' ${WORKSPACE}/npmw run deploy -- --pr=${CHANGE_ID} --env=test --git.branch.name=${BRANCH_NAME} --git.branch.merge=${CHANGE_BRANCH} --git.branch.remote=${CHANGE_BRANCH} --git.url=${GIT_URL}" 
+            }
+            }
+        }
+
+
+
+        stage('Approval For PROD in Jira') {
+            agent { label 'deploy' }   
+            when {
+                expression { return env.CHANGE_TARGET == 'master';}
+                 beforeInput true;
+            }  
+            input {
+                message "Are all the RFDs to PROD Approved/Resolved, all RFDs to TEST closed and RFC Authorized to PROD ?"
+                id "Jira-PROD"
+                parameters { }
+                submitter "SYSTEM"
+            }
+             steps {
+                   script {
+                      echo "Approved"
+               }
+             }
+         }
+
+        stage('Deploy App Changes to PROD') {
+            agent { label 'deploy' }
+            when {
+                // Run Stage only if Pull Request is to master branch
+                expression { return env.CHANGE_TARGET == 'master';}
+                beforeInput true;
+            }      
+            steps {
+                script {
+                // Use Pipeline-cli node project to deploy the wiof-build image to Prod Stage
+                echo "Deploying to Prod ..."
+                sh "cd .pipeline && ${WORKSPACE}/npmw ci && DEBUG='info:*' ${WORKSPACE}/npmw run deploy -- --pr=${CHANGE_ID} --env=prod --git.branch.name=${BRANCH_NAME} --git.branch.merge=${CHANGE_BRANCH} --git.branch.remote=${CHANGE_BRANCH} --git.url=${GIT_URL}"
+                 }
+              }
+           }
+        
+
+       stage('Clean Out') {
+            agent { label 'deploy' }   
+            steps {
+                // Use Pipeline-cli node project to clean openshift objects
+                script {
+               // Fetch all builds for the Pull request from JIRA and mark them succesful (possibility of multiple builds since passing Build keys through jenkins adds an unsucessful build as a Bug)
+                  withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'bitbucket-account', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+                      if("${CHANGE_TARGET}" == "master"){
+                    sh "set +x && curl -H 'Content-type: application/json' -u ${USERNAME}:${PASSWORD} -X POST --data '{\"text\": \" Close RFC to Trigger Clean Out\" }' ${BITBUCKET_URL}/rest/api/latest/projects/${PROJECT_NAME}/repos/${REPO_NAME}/pull-requests/${PR_NO}/comments"
+                      }
+                      else{
+                           sh "set +x && curl -H 'Content-type: application/json' -u ${USERNAME}:${PASSWORD} -X POST --data '{\"text\": \" Merge this PR to Trigger Clean Out\" }' ${BITBUCKET_URL}/rest/api/latest/projects/${PROJECT_NAME}/repos/${REPO_NAME}/pull-requests/${PR_NO}/comments"
+                      }
+                  }   
+               }
+            }
+        }             
+    }
+}
+
+
