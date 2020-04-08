@@ -2,7 +2,7 @@
 kind: Template
 apiVersion: v1
 metadata:
-  name: irs
+  name: ${NAME}
   annotations:
     description: Deployment template for a java app.
     tags: node
@@ -74,16 +74,16 @@ objects:
       as-copy-of: ${NAME}-webade-connection-generic-jar
   stringData:
     webade-connection-4.2.0.jar: ''
-	- kind: Secret	
-  apiVersion: v1	
-  metadata:	
-    name: "${NAME}${SUFFIX}-wallet"	
-    annotations:	
-      as-copy-of: ${NAME}-wallet	
-  stringData:	
-    keystore.p12 : ''	
-    ojdbc.properties: ''	
-    tnsnames.ora: ''	
+	- kind: Secret
+  apiVersion: v1
+  metadata:
+    name: "${NAME}${SUFFIX}-wallet"
+    annotations:
+      as-copy-of: ${NAME}-wallet
+  stringData:
+    keystore.p12 : ''
+    ojdbc.properties: ''
+    tnsnames.ora: ''
     truststore.p12: ''
 - kind: Secret
   apiVersion: v1
@@ -168,7 +168,7 @@ objects:
               - cp /usr/local/tomcat/webapps/${WEBAPP_NAME}/WEB-INF/lib/*.jar /newwebade && cp /webade/* /newwebade  && cp -r /usr/local/tomcat/webapps/${WEBAPP_NAME}/WEB-INF/classes/* /classes && cp /webade-properties/* /classes
             volumeMounts:
               - mountPath: /newwebade
-                name: newwebade 
+                name: newwebade
               - mountPath: /webade
                 name: webade
               - mountPath: /classes
@@ -194,9 +194,9 @@ objects:
             env:
               - name: PORT
                 value: "8080"
-              - name: PROXY_HOST	
-                value: ${ENV_PROXY_HOST}	
-              - name: TNS_ADMIN	
+              - name: PROXY_HOST
+                value: ${ENV_PROXY_HOST}
+              - name: TNS_ADMIN
                 value: /usr/local/tomcat/wallet/
               - name: OPENSHIFT_KUBE_PING_LABELS
                 value: "deploymentConfig=${NAME}${SUFFIX}"
@@ -226,7 +226,7 @@ objects:
               periodSeconds: 10
               successThreshold: 1
               timeoutSeconds: 2
-            volumeMounts:   
+            volumeMounts:
               - mountPath: /usr/local/tomcat/webapps/${WEBAPP_NAME}/WEB-INF/lib/
                 name: newwebade
               - mountPath: /apps_ux/logs/
@@ -235,12 +235,12 @@ objects:
                 name: ${NAME}${SUFFIX}-app-data
               - mountPath: /usr/local/tomcat/webapps/${WEBAPP_NAME}/WEB-INF/classes
                 name: classes
-              
+
         volumes:
          - emptyDir: {}
            name: newwebade
          - name: webade
-           secret: 
+           secret:
              secretName: ${NAME}${SUFFIX}-webade-jar
          - emptyDir: {}
            name: classes
