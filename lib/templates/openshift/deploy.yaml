@@ -270,11 +270,3 @@ parameters:
   description: proxy host configuration
 - name: INDEX
   description: index page for application
-- name: OPENJDK18_IMAGE_NAME
-- name: TOMCAT_IMAGE_TAG
-- name: ARTIFACT_VERSION
-- name: ARTIFACT_ID
-- name: PACKAGING_TYPE
-- name: OPENJDK18_IMAGE_TAG
-- name: TOMCAT_IMAGE_NAME
-
