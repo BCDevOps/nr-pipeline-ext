@@ -270,5 +270,3 @@ parameters:
   description: proxy host configuration
 - name: INDEX
   description: index page for application
-
-
