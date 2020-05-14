@@ -69,3 +69,6 @@ mochawesome-report/
 *.local.json*
 migrations/**
 migrations
+
+# bundles
+dist
