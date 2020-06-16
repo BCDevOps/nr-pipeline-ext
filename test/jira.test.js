@@ -125,11 +125,11 @@ describe('Jira', function() {
                     fields: {
                         project: { key: 'FAKE' },
                         issuetype: { name: 'RFD' },
-                        customfield_10121: {},
+                        customfield_10121: { value: 'DLVR' },
                         labels: ['FAKE', 'auto'],
                         fixVersions: [{}],
                         description: 'Deploying changes from PR NO: PR-456 in REPO: FAKE',
-                        summary: 'RFD-undefined-FAKE-123-rfc-PR-456',
+                        summary: 'RFD-DLVR-FAKE-123-rfc-PR-456',
                         status: { id: '10316', name: 'Submitted' },
                     },
                     key: 'FAKE-1000',
@@ -138,9 +138,9 @@ describe('Jira', function() {
                     fields: {
                         project: { key: 'FAKE' },
                         issuetype: { name: 'RFD-subtask' },
-                        customfield_10121: {},
+                        customfield_10121: { value: 'DLVR' },
                         parent: { key: 'FAKE-1000' },
-                        summary: 'RFD-Subtask-undefined-FAKE-123-rfc-PR-456-undefined-Review',
+                        summary: 'RFD-Subtask-DLVR-FAKE-123-rfc-PR-456-Developer-Review',
                         components: [{ name: 'FAKE' }],
                         status: { id: '10316', name: 'Submitted' },
                     },
@@ -150,11 +150,11 @@ describe('Jira', function() {
                     fields: {
                         project: { key: 'FAKE' },
                         issuetype: { name: 'RFD' },
-                        customfield_10121: {},
+                        customfield_10121: { value: 'TEST' },
                         labels: ['FAKE', 'auto'],
                         fixVersions: [{}],
                         description: 'Deploying changes from PR NO: PR-456 in REPO: FAKE',
-                        summary: 'RFD-undefined-FAKE-123-rfc-PR-456',
+                        summary: 'RFD-TEST-FAKE-123-rfc-PR-456',
                         status: { id: '10316', name: 'Submitted' },
                     },
                     key: 'FAKE-1002',
@@ -163,9 +163,9 @@ describe('Jira', function() {
                     fields: {
                         project: { key: 'FAKE' },
                         issuetype: { name: 'RFD-subtask' },
-                        customfield_10121: {},
+                        customfield_10121: { value: 'TEST' },
                         parent: { key: 'FAKE-1002' },
-                        summary: 'RFD-Subtask-undefined-FAKE-123-rfc-PR-456-undefined-Review',
+                        summary: 'RFD-Subtask-TEST-FAKE-123-rfc-PR-456-IIT-Review',
                         components: [{ name: 'FAKE' }],
                         status: { id: '10316', name: 'Submitted' },
                     },
@@ -175,11 +175,11 @@ describe('Jira', function() {
                     fields: {
                         project: { key: 'FAKE' },
                         issuetype: { name: 'RFD' },
-                        customfield_10121: {},
+                        customfield_10121: { value: 'PROD' },
                         labels: ['FAKE', 'auto'],
                         fixVersions: [{}],
                         description: 'Deploying changes from PR NO: PR-456 in REPO: FAKE',
-                        summary: 'RFD-undefined-FAKE-123-rfc-PR-456',
+                        summary: 'RFD-PROD-FAKE-123-rfc-PR-456',
                         status: { id: '10316', name: 'Submitted' },
                     },
                     key: 'FAKE-1004',
@@ -188,13 +188,32 @@ describe('Jira', function() {
                     fields: {
                         project: { key: 'FAKE' },
                         issuetype: { name: 'RFD-subtask' },
-                        customfield_10121: {},
+                        customfield_10121: { value: 'PROD' },
                         parent: { key: 'FAKE-1004' },
-                        summary: 'RFD-Subtask-undefined-FAKE-123-rfc-PR-456-undefined-Review',
+                        summary: 'RFD-Subtask-PROD-FAKE-123-rfc-PR-456-Business-Review',
                         components: [{ name: 'FAKE' }],
                         status: { id: '10316', name: 'Submitted' },
                     },
                     key: 'FAKE-1005',
+                },
+            ])
+            expect(links).toHaveLength(3)
+            // console.dir(links)
+            expect(links).toStrictEqual([
+                {
+                    type: { id: '10300' },
+                    inwardIssue: { key: 'FAKE-123' },
+                    outwardIssue: { key: 'FAKE-1000' },
+                },
+                {
+                    type: { id: '10300' },
+                    inwardIssue: { key: 'FAKE-123' },
+                    outwardIssue: { key: 'FAKE-1002' },
+                },
+                {
+                    type: { id: '10300' },
+                    inwardIssue: { key: 'FAKE-123' },
+                    outwardIssue: { key: 'FAKE-1004' },
                 },
             ])
         })
