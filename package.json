@@ -13,8 +13,11 @@
       "test:watch:single": "mocha -R list -w $1",
       "test:ci": "nyc --reporter=text mocha --grep @slow --invert",
       "test:watch:ci": "mocha -w --grep @slow --invert",
+      "mocha": "mocha",
+      "depcheck": "depcheck",
       "eslint": "./node_modules/.bin/eslint --ignore-path .gitignore .",
-      "prettier": "./node_modules/.bin/prettier  '**/*.js' --ignore-path '.gitignore' --check"
+      "prettier": "./node_modules/.bin/prettier  '**/*.js' --ignore-path '.gitignore' --check",
+      "gen-workflows": "node util/create-jira-workflow-class.js lib/assets/RFC-Workflow-v1.2.1.xml lib/JiraRfcWorkflowV1.2.1.js && node util/create-jira-workflow-class.js lib/assets/RFD-Workflow-V1.2.xml lib/JiraRfdWorkflowV1.2.js"
    },
    "repository": {
       "type": "git",
@@ -31,16 +34,17 @@
       "commander": "^5.0.0",
       "inquirer": "^7.0.3",
       "jira-connector": "^2.16.1",
-      "liquibase": "0.0.3",
       "moment-timezone": "^0.5.27",
       "replace-in-file": "^4.2.0",
       "request": "^2.88.0",
       "rsync": "^0.6.1",
-      "save": "^2.4.0",
       "winston": "^3.2.1"
    },
    "devDependencies": {
+      "babel-eslint": "^10.1.0",
+      "chai": "^4.2.0",
       "chalk": "^2.0.0",
+      "depcheck": "^0.9.2",
       "eslint": "^6.8.0",
       "eslint-config-prettier": "^6.10.0",
       "eslint-config-standard": "^14.1.0",
@@ -51,10 +55,10 @@
       "eslint-plugin-standard": "^4.0.1",
       "expect": "^24.9.0",
       "mocha": "^6.2.2",
-      "mochawesome": "^4.1.0",
       "nock": "^11.7.0",
       "nyc": "^14.1.1",
       "prettier": "^1.19.1",
-      "sinon": "^7.5.0"
+      "sinon": "^7.5.0",
+      "xml-js": "^1.6.11"
    }
 }
