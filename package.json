@@ -17,7 +17,7 @@
       "nyc": "nyc",
       "depcheck": "depcheck",
       "eslint": "eslint --ignore-path .gitignore .",
-      "prettier": "prettier  '**/*.js' --ignore-path '.gitignore' --check",
+      "prettier": "prettier  '**/*.js' --check",
       "gen-workflows": "node util/create-jira-workflow-class.js lib/assets/RFC-Workflow-v1.2.1.xml lib/JiraRfcWorkflowV1.2.1.js && node util/create-jira-workflow-class.js lib/assets/RFD-Workflow-V1.2.xml lib/JiraRfdWorkflowV1.2.js"
    },
    "repository": {
