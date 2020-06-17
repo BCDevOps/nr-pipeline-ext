@@ -7,7 +7,7 @@ const { spawnSync } = require('child_process')
 // const path = require('path')
 // const { childProcess } = require('./util-functions')
 
-describe('initialize module', function() {
+describe.skip('initialize module', function() {
     this.timeout(50000)
     context('On calling initialize', function() {
         it('ear folder is not present', async function() {
