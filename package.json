@@ -14,9 +14,10 @@
       "test:ci": "nyc --reporter=text mocha --grep @slow --invert",
       "test:watch:ci": "mocha -w --grep @slow --invert",
       "mocha": "mocha",
+      "nyc": "nyc",
       "depcheck": "depcheck",
-      "eslint": "./node_modules/.bin/eslint --ignore-path .gitignore .",
-      "prettier": "./node_modules/.bin/prettier  '**/*.js' --ignore-path '.gitignore' --check",
+      "eslint": "eslint --ignore-path .gitignore .",
+      "prettier": "prettier  '**/*.js' --ignore-path '.gitignore' --check",
       "gen-workflows": "node util/create-jira-workflow-class.js lib/assets/RFC-Workflow-v1.2.1.xml lib/JiraRfcWorkflowV1.2.1.js && node util/create-jira-workflow-class.js lib/assets/RFD-Workflow-V1.2.xml lib/JiraRfdWorkflowV1.2.js"
    },
    "repository": {
@@ -54,6 +55,7 @@
       "eslint-plugin-promise": "^4.2.1",
       "eslint-plugin-standard": "^4.0.1",
       "expect": "^24.9.0",
+      "jest-snapshot": "^26.0.1",
       "mocha": "^6.2.2",
       "nock": "^11.7.0",
       "nyc": "^14.1.1",
