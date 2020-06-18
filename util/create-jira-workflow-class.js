@@ -19,9 +19,11 @@ for (const action of result.workflow[0]['global-actions'][0].action) {
     const targetStepId = action.results[0]['unconditional-result'][0]._attributes.step
     GLOBAL_ACTIONS.set(action._attributes.id, Object.assign({ targetStep: targetStepId }, action._attributes))
 }
-for (const action of result.workflow[0]['common-actions'][0].action) {
-    const targetStepId = action.results[0]['unconditional-result'][0]._attributes.step
-    COMMON_ACTIONS.set(action._attributes.id, Object.assign({ targetStep: targetStepId }, action._attributes))
+if (result.workflow[0]['common-actions'] && result.workflow[0]['common-actions'].length > 0) {
+    for (const action of result.workflow[0]['common-actions'][0].action) {
+        const targetStepId = action.results[0]['unconditional-result'][0]._attributes.step
+        COMMON_ACTIONS.set(action._attributes.id, Object.assign({ targetStep: targetStepId }, action._attributes))
+    }
 }
 
 const INITIAL_STEP = STEPS.get(
@@ -37,18 +39,22 @@ for (const step of result.workflow[0].steps[0].step) {
     // const fromStatusId = console.dir(step.meta[0]._text[0])
     // STEPS.set(step._attributes.id, step._attributes)
     // step.meta._attributes.
-    if (step.actions[0].action) {
-        for (const action of step.actions[0].action) {
-            const targetStepId = action.results[0]['unconditional-result'][0]._attributes.step
-            stepRef.actions.push(
-                Object.assign({ targetStep: targetStepId, targetStepId, type: 'local' }, action._attributes)
-            )
+    if (step.actions && step.actions.length > 0) {
+        if (step.actions[0].action) {
+            for (const action of step.actions[0].action) {
+                const targetStepId = action.results[0]['unconditional-result'][0]._attributes.step
+                stepRef.actions.push(
+                    Object.assign({ targetStep: targetStepId, targetStepId, type: 'local' }, action._attributes)
+                )
+            }
         }
-    }
-    if (step.actions[0]['common-action']) {
-        for (const actionRef of step.actions[0]['common-action']) {
-            const commonAction = COMMON_ACTIONS.get(actionRef._attributes.id)
-            stepRef.actions.push(Object.assign({ targetStep: commonAction.targetStep, type: 'common' }, commonAction))
+        if (step.actions[0]['common-action']) {
+            for (const actionRef of step.actions[0]['common-action']) {
+                const commonAction = COMMON_ACTIONS.get(actionRef._attributes.id)
+                stepRef.actions.push(
+                    Object.assign({ targetStep: commonAction.targetStep, type: 'common' }, commonAction)
+                )
+            }
         }
     }
     for (const globalAction of GLOBAL_ACTIONS.values()) {

@@ -12,13 +12,14 @@
       "version": "echo \"node@$(node --version) ($(which node))\" && echo \"npm@$(npm --version) ($(which npm))\" && npm ls",
       "test:watch:single": "mocha -R list -w $1",
       "test:ci": "nyc --reporter=text mocha --grep @slow --invert",
+      "test:ci:html": "nyc --reporter=html mocha --grep @slow --invert",
       "test:watch:ci": "mocha -w --grep @slow --invert",
       "mocha": "mocha",
       "nyc": "nyc",
       "depcheck": "depcheck",
       "eslint": "eslint --ignore-path .gitignore .",
       "prettier": "prettier  '**/*.js' --check",
-      "gen-workflows": "node util/create-jira-workflow-class.js lib/assets/RFC-Workflow-v1.2.1.xml lib/JiraRfcWorkflowV1.2.1.js && node util/create-jira-workflow-class.js lib/assets/RFD-Workflow-V1.2.xml lib/JiraRfdWorkflowV1.2.js"
+      "gen-workflows": "node util/create-jira-workflow-class.js lib/assets/RFC-Workflow-v1.2.1.xml lib/JiraRfcWorkflowV1.2.1.js && node util/create-jira-workflow-class.js lib/assets/RFD-Workflow-V1.2.xml lib/JiraRfdWorkflowV1.2.js && node util/create-jira-workflow-class.js lib/assets/RFC-Workflow-v2.0.0.xml lib/JiraRfcWorkflowV2.0.0.js"
    },
    "repository": {
       "type": "git",
@@ -38,6 +39,11 @@
       "moment-timezone": "^0.5.27",
       "replace-in-file": "^4.2.0",
       "request": "^2.88.0",
+      "rsync": "^0.6.1",
+      "winston": "^3.2.1"
+   },
+   "peerDependencies": {
+      "@bcgov/pipeline-cli": "git+https://github.com/BCDevOps/pipeline-cli.git#release/v1.1",
       "rsync": "^0.6.1",
       "winston": "^3.2.1"
    },
