@@ -12,7 +12,11 @@ describe.skip('DA Review [@slow]', function() {
 
     this.timeout(50000)
     beforeEach(async function() {
+        // @ts-ignore
+        // eslint-disable-next-line require-path-exists/exists
         this.idir = require('./idir.local.json')
+        // @ts-ignore
+        // eslint-disable-next-line require-path-exists/exists
         this.db = require('./db.local.json')
         this.dbSettings = {
             dbUrl: db.CWI_TXN.dbUrl,

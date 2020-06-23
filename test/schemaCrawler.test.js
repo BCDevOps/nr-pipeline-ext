@@ -20,6 +20,8 @@ describe.skip('schemacrawler module', function() {
             })
         })
         it('install with ojdbc', function() {
+            // @ts-ignore
+            // eslint-disable-next-line require-path-exists/exists
             const idir = require('./idir.local.json')
             const schemaCrawler = new SchemaCrawler(
                 fakeConfig.url,
@@ -44,6 +46,8 @@ describe.skip('schemacrawler module', function() {
 
     context('When checking installed version', function() {
         it('version: show correct download version', function() {
+            // @ts-ignore
+            // eslint-disable-next-line require-path-exists/exists
             const idir = require('./idir.local.json')
             const schemaCrawler = new SchemaCrawler(
                 fakeConfig.url,

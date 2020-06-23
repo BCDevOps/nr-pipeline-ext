@@ -18,6 +18,7 @@ describe.skip('MavenRepository', function() {
         })
 
         it('fetch from private repository', function() {
+            // eslint-disable-next-line require-path-exists/exists
             const idir = require('./idir.local.json')
             const repo = new MavenRepository('https://bwa.nrs.gov.bc.ca/int/artifactory/libs-release', idir)
             return repo

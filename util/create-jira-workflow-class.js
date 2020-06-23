@@ -92,6 +92,7 @@ for (const step of STEPS.values()) {
         }
     )
 }
+
 fs.appendFileSync(outputFile, '\n', { flag: 'a' })
 for (const action of [...GLOBAL_ACTIONS.values(), ...COMMON_ACTIONS.values()]) {
     const targetStepRef = STEPS.get(action.targetStep)
@@ -175,6 +176,14 @@ for (const step of STEPS.values()) {
         flag: 'a',
     })
 }
+fs.appendFileSync(outputFile, '\n', { flag: 'a' })
+fs.appendFileSync(outputFile, '    static ALL_STATUS = [', { flag: 'a' })
+for (const step of STEPS.values()) {
+    fs.appendFileSync(outputFile, `\n        ${scname(step.name)},`, {
+        flag: 'a',
+    })
+}
+fs.appendFileSync(outputFile, '\n    ]\n', { flag: 'a' })
 fs.appendFileSync(outputFile, '\n', { flag: 'a' })
 fs.appendFileSync(outputFile, `    static INITIAL_STATUS = ${scname(INITIAL_STEP.name)}\n`, { flag: 'a' })
 fs.appendFileSync(outputFile, '    static getTransitionsByStatusId(statusId) {\n', { flag: 'a' })

@@ -6,6 +6,8 @@ describe.skip('liquibase module', function() {
     this.timeout(50000)
     context('On Liquibase setup', function() {
         it('install can be done', function() {
+            // @ts-ignore
+            // eslint-disable-next-line require-path-exists/exists
             const idir = require('./idir.local.json')
             const liquibaseObj = new Liquibase({
                 drivers: [{ groupId: 'com.oracle.jdbc', artifactId: 'ojdbc8', version: '18.3.0.0' }],
