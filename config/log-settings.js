@@ -17,6 +17,7 @@ const logSettings = {
                 }),
                 new transports.Console({
                     level: 'debug',
+                    // @ts-ignore
                     colorize: true,
                     format: combine(
                         label({ label: 'nr-pipeline-ext' }),

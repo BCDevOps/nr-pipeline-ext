@@ -45,13 +45,11 @@ describe('RFC Verification:', function() {
                 jiraServer.patchIssue(rfc, { fields: { status: status } })
                 const result = await verifier.isReadyForDeployment(env, rfc.key)
                 await expect(result).toMatchSnapshot(this, `388a19ef-a1d7-47ab-9ca4-4eff419aab96-${env}-${status.id}`)
-                if (
-                    (env === 'dlvr' && status === RFCWORKFLOW.STATUS_AUTHORIZED_FOR_INT) ||
-                    (env === 'test' && status === RFCWORKFLOW.STATUS_AUTHORIZED_FOR_TEST) ||
-                    (env === 'prod' && status === RFCWORKFLOW.STATUS_AUTHORIZED_FOR_PROD)
-                ) {
+                if (status === RFCWORKFLOW.STATUS_APPROVED) {
+                    await expect(status).toEqual(RFCWORKFLOW.STATUS_APPROVED)
                     await expect(result.status).toEqual(VERIFY_STATUS.READY)
                 } else {
+                    await expect(status).not.toEqual(RFCWORKFLOW.STATUS_APPROVED)
                     await expect(result.status).toEqual(VERIFY_STATUS.NOT_READY)
                 }
             })
@@ -134,7 +132,7 @@ describe('RFC Verification:', function() {
         // Act
         const result = await verifier.verifyBeforeDeployment(settings)
         expect(result).toBeDefined()
-        expect(result).toEqual(VERIFY_STATUS.NOT_READY)
+        expect(result.status).toEqual(VERIFY_STATUS.NOT_READY)
     })
 })
 
@@ -399,7 +397,7 @@ describe('obtainCurrentRfcRfdContext:', function() {
             expect(Object.keys(result.reason)).toContain(REASON.REASON_CODE_RFC_NOT_AUTHORIZED)
             const notAuthorized = result.reason[REASON.REASON_CODE_RFC_NOT_AUTHORIZED]
             expect(notAuthorized.issueItems[0].issueKey).toEqual(rfcIssueKey)
-            expect(notAuthorized.issueItems[0].status).not.toEqual(RFCWORKFLOW.STATUS_AUTHORIZED_FOR_INT.name)
+            expect(notAuthorized.issueItems[0].status).not.toEqual(RFCWORKFLOW.STATUS_AUTHORIZED_FOR_INT)
             expect(notAuthorized.issueItems[0].env).toEqual(env)
         })
 
@@ -470,7 +468,7 @@ describe('obtainCurrentRfcRfdContext:', function() {
             expect(Object.keys(result.reason)).toContain(REASON.REASON_CODE_RFC_NOT_AUTHORIZED)
             const notAuthorized = result.reason[REASON.REASON_CODE_RFC_NOT_AUTHORIZED]
             expect(notAuthorized.issueItems[0].issueKey).toEqual(rfcIssueKey)
-            expect(notAuthorized.issueItems[0].status).not.toEqual(RFCWORKFLOW.STATUS_AUTHORIZED_FOR_TEST.name)
+            expect(notAuthorized.issueItems[0].status).not.toEqual(RFCWORKFLOW.STATUS_AUTHORIZED_FOR_TEST)
             expect(notAuthorized.issueItems[0].env).toEqual(env)
         })
 
@@ -516,7 +514,7 @@ describe('obtainCurrentRfcRfdContext:', function() {
             expect(Object.keys(result.reason)).toContain(REASON.REASON_CODE_RFC_NOT_AUTHORIZED)
             const notAuthorized = result.reason[REASON.REASON_CODE_RFC_NOT_AUTHORIZED]
             expect(notAuthorized.issueItems[0].issueKey).toEqual(rfcIssueKey)
-            expect(notAuthorized.issueItems[0].status).not.toEqual(RFCWORKFLOW.STATUS_AUTHORIZED_FOR_PROD.name)
+            expect(notAuthorized.issueItems[0].status).not.toEqual(RFCWORKFLOW.STATUS_AUTHORIZED_FOR_PROD)
             expect(notAuthorized.issueItems[0].env).toEqual(env)
         })
 
@@ -529,7 +527,7 @@ describe('obtainCurrentRfcRfdContext:', function() {
             const verifier = new Verifier(settings)
             const testAllVerifiedRfcRfdContext = {
                 rfcIssueKey: 'MyRFCissue-99',
-                rfcStatus: 'Authorized for Test',
+                rfcStatus: RFCWORKFLOW.STATUS_APPROVED.name,
                 rfdsByEnv: {
                     test: {
                         rfds: [
@@ -803,23 +801,9 @@ function getDefaultRfcIssue() {
         },
     }
 
-    const rand1 = Math.random()
-    let randomRfcStatus
-    if (rand1 < 0.2) {
-        randomRfcStatus = RFCWORKFLOW.STATUS_AUTHORIZED_FOR_INT.name
-    } else if (rand1 >= 0.2 && rand1 < 0.4) {
-        randomRfcStatus = RFCWORKFLOW.STATUS_AUTHORIZED_FOR_TEST.name
-    } else if (rand1 >= 0.4 && rand1 < 0.6) {
-        randomRfcStatus = RFCWORKFLOW.STATUS_AUTHORIZED_FOR_PROD.name
-    } else {
-        randomRfcStatus = 'Some Other Status'
-    }
-
     const rfcIssueStub = {
         fields: {
-            status: {
-                name: randomRfcStatus,
-            },
+            status: RFCWORKFLOW.STATUS_APPROVED,
             issuelinks: [
                 dlrvAutoRfdIssueLink,
                 testAutoRfdIssueLink,

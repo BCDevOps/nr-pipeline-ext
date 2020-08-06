@@ -65,7 +65,7 @@ describe('Jira @jira', function() {
                     fields: {
                         fixVersions: ['0.0.0'],
                         issuetype: { id: '10400', name: 'RFC' },
-                        status: RFCWORKFLOW.STATUS_AUTHORIZED_FOR_PROD,
+                        status: RFCWORKFLOW.STATUS_APPROVED,
                         issuelinks: [
                             {
                                 inwardIssue: { key: 'FAKE-123' },
