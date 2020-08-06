@@ -65,9 +65,9 @@ describe('BasicJavaApplicationDeployer:', function() {
 
             // Verify
             sandbox.assert.calledOnce(isCDdeploymentStub)
-            // sandbox.assert.calledOnce(deployOpenshiftStub)
+            sandbox.assert.notCalled(deployOpenshiftStub)
             sandbox.assert.calledOnce(verifyBeforeDeploymentStub)
-            // sandbox.assert.calledOnce(jiraTransitionRFDpostDeploymentStub)
+            sandbox.assert.notCalled(jiraTransitionRFDpostDeploymentStub)
             // sandbox.assert.calledWith(jiraTransitionRFDpostDeploymentStub, settingsStub.options.env)
         })
 
