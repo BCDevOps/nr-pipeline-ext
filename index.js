@@ -4,6 +4,8 @@ const SchemaCrawler = require('./lib/SchemaCrawler')
 const CONST = require('./lib/constants')
 const InputDeployerVerify = require('./lib/InputDeployerVerify')
 
+const BasicBuilder = require('./lib/BasicBuilder')
+const BasicDeployer = require('./lib/BasicDeployer')
 const BasicJavaApplicationBuilder = require('./lib/BasicJavaApplicationBuilder')
 const BasicJavaApplicationDeployer = require('./lib/BasicJavaApplicationDeployer')
 const CreateChangesetUpdateChangelog = require('./lib/CreateChangesetUpdateChangelog')
@@ -17,6 +19,8 @@ module.exports = {
     Liquibase,
     SchemaCrawler,
     CONST,
+    BasicBuilder,
+    BasicDeployer,
     BasicJavaApplicationBuilder,
     BasicJavaApplicationDeployer,
     CreateChangesetUpdateChangelog,
