@@ -29,7 +29,7 @@ describe('RFC Verification:', function() {
     const environments = ['dlvr', 'test', 'prod']
     for (const env of environments) {
         for (const status of RFCWORKFLOW.ALL_STATUS) {
-            it(`env: ${env}, status: ${status.name} (${status.id})`, async function() {
+            it(`env: ${env}, status: ${status.name} (${status.id}), no RFDs`, async function() {
                 const jiraSettings = JiraMock.createJiraClientSettings()
                 const config = {
                     jiraUrl: jiraSettings.url,
