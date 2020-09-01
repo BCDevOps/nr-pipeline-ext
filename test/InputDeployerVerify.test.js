@@ -1,24 +1,62 @@
 'use strict'
 const Jira = require('../lib/Jira')
 const expect = require('expect')
+const toMatchSnapshot = require('./expect-mocha-snapshot')
+expect.extend({ toMatchSnapshot })
 const sinon = require('sinon')
+const nock = require('nock')
 const sandbox = sinon.createSandbox()
-const { ENV, ISSUE_STATUS_NAME, ISSUE_LINK_TYPE_NAME, VERIFY_STATUS, REASON } = require('../lib/constants')
+const { ENV, ISSUE_LINK_TYPE_NAME, VERIFY_STATUS, REASON } = require('../lib/constants')
 const { previousEnv } = require('../lib/util-functions')
 const Verifier = require('../lib/InputDeployerVerify')
+const { JiraMock, RFCWORKFLOW, RFDWORKFLOW } = require('./JiraMock')
 
-describe('verifyBeforeDeployment:', function() {
+describe('RFC Verification:', function() {
     this.timeout(50000)
-    let isReadyForDeploymentStub
 
-    this.beforeEach(function() {
-        isReadyForDeploymentStub = sandbox.stub(Verifier.prototype, 'isReadyForDeployment')
+    beforeEach('Using fake settings to create JIRA object', function() {
+        if (!nock.isActive()) {
+            nock.activate()
+        }
+        nock.disableNetConnect()
     })
-    this.afterEach(function() {
+    afterEach('Completely restore all fakes created through the sandbox', function() {
         sandbox.restore()
+        nock.restore()
+        nock.cleanAll()
     })
-
+    // const verifier = new Verifier(config)
+    const environments = ['dlvr', 'test', 'prod']
+    for (const env of environments) {
+        for (const status of RFCWORKFLOW.ALL_STATUS) {
+            it(`env: ${env}, status: ${status.name} (${status.id}), no RFDs`, async function() {
+                const jiraSettings = JiraMock.createJiraClientSettings()
+                const config = {
+                    jiraUrl: jiraSettings.url,
+                    phases: {
+                        [env]: { credentials: { idir: { user: jiraSettings.username, pass: jiraSettings.password } } },
+                    },
+                }
+                const jiraServer = new JiraMock()
+                const rfc = jiraServer.createRFC()
+                const verifier = new Verifier(config)
+                jiraServer._addIssue(rfc)
+                jiraServer.start()
+                jiraServer.patchIssue(rfc, { fields: { status: status } })
+                const result = await verifier.isReadyForDeployment(env, rfc.key)
+                await expect(result).toMatchSnapshot(this, `388a19ef-a1d7-47ab-9ca4-4eff419aab96-${env}-${status.id}`)
+                if (status === RFCWORKFLOW.STATUS_APPROVED) {
+                    await expect(status).toEqual(RFCWORKFLOW.STATUS_APPROVED)
+                    await expect(result.status).toEqual(VERIFY_STATUS.READY)
+                } else {
+                    await expect(status).not.toEqual(RFCWORKFLOW.STATUS_APPROVED)
+                    await expect(result.status).toEqual(VERIFY_STATUS.NOT_READY)
+                }
+            })
+        }
+    }
     it("When RFC/RFD conditions are not met, return result with 'Not Ready' status", async function() {
+        const isReadyForDeploymentStub = sandbox.stub(Verifier.prototype, 'isReadyForDeployment')
         const env = 'test'
         const settings = getDefaultSettings()
         settings.options.env = env
@@ -94,70 +132,7 @@ describe('verifyBeforeDeployment:', function() {
         // Act
         const result = await verifier.verifyBeforeDeployment(settings)
         expect(result).toBeDefined()
-        expect(result).toEqual(VERIFY_STATUS.NOT_READY)
-    })
-
-    it("When RFC/RFD conditons are met for deployment, return result with 'Ready' status.", async function() {
-        const env = 'test'
-        const settings = getDefaultSettings()
-        settings.options.env = env
-        settings.phase = env
-        const keys = settings.options.git.branch.merge.split('-')
-        const rfcIssuKey = keys[0] + '-' + keys[1]
-        const verifier = new Verifier(settings)
-        isReadyForDeploymentStub.withArgs(env, rfcIssuKey).resolves({
-            status: 'Ready',
-            rfcRfdContext: {
-                rfcIssueKey: 'MyRFCissue-99',
-                rfcStatus: 'Authorized for Test',
-                rfdsByEnv: {
-                    test: {
-                        rfds: [
-                            {
-                                issueKey: 'RFD-AUTO-TEST-01',
-                                labels: 'auto',
-                                env: 'test',
-                                status: 'Approved',
-                                blockedBy: [
-                                    { issueKey: 'INWARDISSUE-0', status: 'Resolved', blockingOn: 'RFD-AUTO-TEST-01' },
-                                ],
-                            },
-                            {
-                                issueKey: 'RFD-BUSINESS-TEST-01',
-                                labels: 'some-label',
-                                env: 'test',
-                                status: 'Approved',
-                                blockedBy: [
-                                    {
-                                        issueKey: 'INWARDISSUE-0',
-                                        status: 'Resolved',
-                                        blockingOn: 'RFD-BUSINESS-TEST-01',
-                                    },
-                                    {
-                                        issueKey: 'INWARDISSUE-1',
-                                        status: 'Resolved',
-                                        blockingOn: 'RFD-BUSINESS-TEST-01',
-                                    },
-                                    {
-                                        issueKey: 'INWARDISSUE-2',
-                                        status: 'Resolved',
-                                        blockingOn: 'RFD-BUSINESS-TEST-01',
-                                    },
-                                ],
-                            },
-                        ],
-                        previousEnvRfds: [
-                            { issueKey: 'RFD-AUTO-DLVR-01', env: 'dlvr', status: 'Closed', labels: 'auto' },
-                        ],
-                    },
-                },
-            },
-        })
-
-        // Act
-        const result = await verifier.verifyBeforeDeployment(settings)
-        expect(result).toBeDefined()
-        expect(result).toEqual(VERIFY_STATUS.READY)
+        expect(result.status).toEqual(VERIFY_STATUS.NOT_READY)
     })
 })
 
@@ -239,7 +214,7 @@ describe('obtainCurrentRfcRfdContext:', function() {
             expect(blocked.issueItems.length).not.toBe(0)
             const rfds = blockedByRfcRfdContext.rfdsByEnv[env].rfds.map(rfd => rfd.issueKey)
             blocked.issueItems.forEach(item => {
-                expect(item.status).not.toBe(ISSUE_STATUS_NAME.RESOLVED)
+                expect(item.status).not.toBe(RFDWORKFLOW.STATUS_RESOLVED.name)
                 expect(rfds).toContain(item.blockingOn)
             })
         })
@@ -299,7 +274,7 @@ describe('obtainCurrentRfcRfdContext:', function() {
             expect(resultIssueItemsIssueKeys).toContain(rfdNotApprovedRfcRfdContext.rfdsByEnv[env].rfds[1].issueKey)
             notApproved.issueItems.forEach(issueItem => {
                 expect(issueItem.env).toEqual(env)
-                expect(issueItem.status).not.toEqual(ISSUE_STATUS_NAME.APPROVED)
+                expect(issueItem.status).not.toEqual(RFDWORKFLOW.STATUS_APPROVED.name)
             })
         })
 
@@ -376,7 +351,7 @@ describe('obtainCurrentRfcRfdContext:', function() {
             )
             pNotClosed.issueItems.forEach(issueItem => {
                 expect(issueItem.env).toEqual(previousEnv(env))
-                expect(issueItem.status).not.toEqual(ISSUE_STATUS_NAME.CLOSED)
+                expect(issueItem.status).not.toEqual(RFDWORKFLOW.STATUS_CLOSED.name)
             })
         })
 
@@ -422,7 +397,7 @@ describe('obtainCurrentRfcRfdContext:', function() {
             expect(Object.keys(result.reason)).toContain(REASON.REASON_CODE_RFC_NOT_AUTHORIZED)
             const notAuthorized = result.reason[REASON.REASON_CODE_RFC_NOT_AUTHORIZED]
             expect(notAuthorized.issueItems[0].issueKey).toEqual(rfcIssueKey)
-            expect(notAuthorized.issueItems[0].status).not.toEqual(ISSUE_STATUS_NAME.AUTHORIZEDFORINT)
+            expect(notAuthorized.issueItems[0].status).not.toEqual(RFCWORKFLOW.STATUS_AUTHORIZED_FOR_INT)
             expect(notAuthorized.issueItems[0].env).toEqual(env)
         })
 
@@ -493,7 +468,7 @@ describe('obtainCurrentRfcRfdContext:', function() {
             expect(Object.keys(result.reason)).toContain(REASON.REASON_CODE_RFC_NOT_AUTHORIZED)
             const notAuthorized = result.reason[REASON.REASON_CODE_RFC_NOT_AUTHORIZED]
             expect(notAuthorized.issueItems[0].issueKey).toEqual(rfcIssueKey)
-            expect(notAuthorized.issueItems[0].status).not.toEqual(ISSUE_STATUS_NAME.AUTHORIZEDFORTEST)
+            expect(notAuthorized.issueItems[0].status).not.toEqual(RFCWORKFLOW.STATUS_AUTHORIZED_FOR_TEST)
             expect(notAuthorized.issueItems[0].env).toEqual(env)
         })
 
@@ -539,7 +514,7 @@ describe('obtainCurrentRfcRfdContext:', function() {
             expect(Object.keys(result.reason)).toContain(REASON.REASON_CODE_RFC_NOT_AUTHORIZED)
             const notAuthorized = result.reason[REASON.REASON_CODE_RFC_NOT_AUTHORIZED]
             expect(notAuthorized.issueItems[0].issueKey).toEqual(rfcIssueKey)
-            expect(notAuthorized.issueItems[0].status).not.toEqual(ISSUE_STATUS_NAME.AUTHORIZEDFORPROD)
+            expect(notAuthorized.issueItems[0].status).not.toEqual(RFCWORKFLOW.STATUS_AUTHORIZED_FOR_PROD)
             expect(notAuthorized.issueItems[0].env).toEqual(env)
         })
 
@@ -552,7 +527,7 @@ describe('obtainCurrentRfcRfdContext:', function() {
             const verifier = new Verifier(settings)
             const testAllVerifiedRfcRfdContext = {
                 rfcIssueKey: 'MyRFCissue-99',
-                rfcStatus: 'Authorized for Test',
+                rfcStatus: RFCWORKFLOW.STATUS_APPROVED.name,
                 rfdsByEnv: {
                     test: {
                         rfds: [
@@ -748,9 +723,9 @@ function getDefaultRfdIssueInfo(issueKey) {
     const rand1 = Math.random()
     let randomRfdStatus
     if (rand1 < 0.3) {
-        randomRfdStatus = ISSUE_STATUS_NAME.CLOSED
+        randomRfdStatus = RFDWORKFLOW.STATUS_CLOSED.name
     } else if (rand1 >= 0.3 && rand1 < 0.7) {
-        randomRfdStatus = ISSUE_STATUS_NAME.APPROVED
+        randomRfdStatus = RFDWORKFLOW.STATUS_APPROVED.name
     } else {
         randomRfdStatus = 'Some Other Status'
     }
@@ -786,7 +761,7 @@ function getDefaultRfdIssueInfo(issueKey) {
         const rfdIssueLinks = []
         for (let i = 0; i < num; i++) {
             const inwardIssueKey = `INWARDISSUE-${i}`
-            const inwardIssueStatus = Math.random() >= 0.5 ? ISSUE_STATUS_NAME.RESOLVED : 'Some Other Status'
+            const inwardIssueStatus = Math.random() >= 0.5 ? RFDWORKFLOW.STATUS_RESOLVED.name : 'Some Other Status'
             const issueLink = {
                 type: { inward: 'is blocked by' },
                 inwardIssue: { key: inwardIssueKey, fields: { status: { name: inwardIssueStatus } } },
@@ -826,23 +801,9 @@ function getDefaultRfcIssue() {
         },
     }
 
-    const rand1 = Math.random()
-    let randomRfcStatus
-    if (rand1 < 0.2) {
-        randomRfcStatus = ISSUE_STATUS_NAME.AUTHORIZEDFORINT
-    } else if (rand1 >= 0.2 && rand1 < 0.4) {
-        randomRfcStatus = ISSUE_STATUS_NAME.AUTHORIZEDFORTEST
-    } else if (rand1 >= 0.4 && rand1 < 0.6) {
-        randomRfcStatus = ISSUE_STATUS_NAME.AUTHORIZEDFORPROD
-    } else {
-        randomRfcStatus = 'Some Other Status'
-    }
-
     const rfcIssueStub = {
         fields: {
-            status: {
-                name: randomRfcStatus,
-            },
+            status: RFCWORKFLOW.STATUS_APPROVED,
             issuelinks: [
                 dlrvAutoRfdIssueLink,
                 testAutoRfdIssueLink,

@@ -10,7 +10,7 @@ const { spawnSync } = require('child_process')
 describe.skip('initialize module', function() {
     this.timeout(50000)
     context('On calling initialize', function() {
-        it.only('ear folder is not present', async function() {
+        it('ear folder is not present', async function() {
             spawnSync('rm', ['-rf', '../ear'])
             expect(await initializerObj.__isDir('../ear')).toBe(false)
         })
@@ -41,7 +41,7 @@ describe.skip('initialize module', function() {
     })
 
     context('On calling initialize', function() {
-        it.only('src folder is not present', function() {
+        it('src folder is not present', function() {
             spawnSync('rm', ['-rf', '../src'])
             spawnSync('rm', ['-rf', '../ear'])
             spawnSync('rm', ['-rf', '.pipeline'])
@@ -51,7 +51,7 @@ describe.skip('initialize module', function() {
     })
 
     context('On calling initialize', function() {
-        it.only('.pipeline folder is synced', async function() {
+        it('.pipeline folder is synced', async function() {
             spawnSync('rm', ['-rf', '.pipeline'])
             fs.mkdirSync('.pipeline')
             fs.mkdirSync('.pipeline/node_modules')

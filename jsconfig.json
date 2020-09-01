@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "outDir": "dist",
+    "checkJs": true,
+    "allowJs": true
+  },
+  "exclude": [
+    "node_modules",
+    "**/node_modules/*",
+    "dist",
+    "coverage",
+    "config",
+    ".nyc_output",
+    "test",
+    "util"
+  ]
+}

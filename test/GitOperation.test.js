@@ -34,6 +34,8 @@ describe('GitOperation:', function() {
     // system test, requires credential from "./idir.local.json" (create one if not exists)
     context('prepare() @slow', function() {
         it.skip('When successfully prepared, repo directory is returned.', function() {
+            // @ts-ignore
+            // eslint-disable-next-line require-path-exists/exists
             const idir = require('./idir.local.json')
             // const gitCredentials = {username: 'fakeUsername', password: 'fakePass', email: 'fakeEmail'}
             const gitCredentials = { username: idir.user, password: idir.pass, email: 'fakeEmail' }

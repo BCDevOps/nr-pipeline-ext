@@ -1,0 +1,6 @@
+.gitignore
+coverage/*
+dist/*
+lib/JiraRfcWorkflowV1.2.1.js
+lib/JiraRfdWorkflowV1.2.js
+lib/JiraRfcWorkflowV2.0.0.js
