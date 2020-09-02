@@ -34,7 +34,6 @@
    },
    "homepage": "https://github.com/BCDevOps/nr-pipeline-ext#readme",
    "dependencies": {
-      "@bcgov/pipeline-cli": "git+https://github.com/BCDevOps/pipeline-cli.git#release/v1.1",
       "commander": "^5.1.0",
       "inquirer": "^7.3.3",
       "jira-connector": "^2.16.1",
@@ -45,7 +44,6 @@
       "winston": "^3.3.3"
    },
    "peerDependencies": {
-      "@bcgov/pipeline-cli": "git+https://github.com/BCDevOps/pipeline-cli.git#release/v1.1",
       "rsync": "^0.6.1",
       "winston": "^3.2.1"
    },
