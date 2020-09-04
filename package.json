@@ -17,9 +17,9 @@
       "mocha": "mocha",
       "nyc": "nyc",
       "depcheck": "depcheck",
-      "eslint": "eslint .",
-      "prettier:format:all": "prettier --write '**/*.js'",
-      "prettier": "prettier  '**/*.js' --check",
+      "eslint": "eslint . --ext .js,.ts",
+      "prettier:format:all": "prettier --write '**/*.js,**/*.ts'",
+      "prettier": "prettier  '**/*.js,**/*.ts' --check",
       "gen-workflows": "node util/create-jira-workflow-class.js lib/assets/RFC-Workflow-v1.2.1.xml lib/JiraRfcWorkflowV1.2.1.js && node util/create-jira-workflow-class.js lib/assets/RFD-Workflow-V1.2.xml lib/JiraRfdWorkflowV1.2.js && node util/create-jira-workflow-class.js lib/assets/RFC-Workflow-v2.0.0.xml lib/JiraRfcWorkflowV2.0.0.js",
       "tsc": "tsc --noEmit -p ."
    },
@@ -50,7 +50,9 @@
       "winston": "^3.2.1"
    },
    "devDependencies": {
-      "@types/node": "^14.6.0",
+      "@types/node": "^14.6.3",
+      "@typescript-eslint/eslint-plugin": "^4.0.1",
+      "@typescript-eslint/parser": "^4.0.1",
       "babel-eslint": "^10.1.0",
       "chai": "^4.2.0",
       "chalk": "^2.0.0",

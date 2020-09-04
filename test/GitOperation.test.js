@@ -2,8 +2,8 @@
 const expect = require('expect')
 const sinon = require('sinon')
 const sandbox = sinon.createSandbox()
-const GitClient = require('../lib/GitOperation')
-const { childProcess } = require('../lib/util-functions')
+const GitClient = require('../src/GitOperation')
+const { childProcess } = require('../src/util-functions')
 const path = require('path')
 
 describe('GitOperation:', function() {

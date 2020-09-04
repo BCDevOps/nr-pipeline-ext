@@ -1,7 +1,7 @@
 'use strict'
 const expect = require('expect')
 const moment = require('moment-timezone')
-const Generator = require('../lib/CreateChangesetUpdateChangelog')
+const Generator = require('../src/CreateChangesetUpdateChangelog')
 const generate = new Generator()
 // const fs = require('fs')
 // const sinon = require('sinon')

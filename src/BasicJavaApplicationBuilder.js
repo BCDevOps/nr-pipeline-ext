@@ -1,7 +1,7 @@
 'use strict'
 const { OpenShiftClientX } = require('@bcgov/pipeline-cli')
 const Jira = require('./Jira')
-const Git = require('../lib/GitOperation')
+const Git = require('./GitOperation')
 
 module.exports = class {
     constructor(settings) {

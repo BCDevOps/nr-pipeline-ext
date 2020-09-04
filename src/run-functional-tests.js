@@ -16,7 +16,7 @@
  *  - UITEST_SKIP: can be used to skip tests
  */
 
-const config = require(`${process.cwd()}/lib/config.js`)
+const config = require(`${process.cwd()}/src/config.js`)
 const { OpenShiftClientX } = require('@bcgov/pipeline-cli')
 const path = require('path')
 const fs = require('fs')

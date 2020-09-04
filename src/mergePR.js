@@ -1,5 +1,5 @@
 const { spawn } = require('child_process')
-const settings = require(`${process.cwd()}/lib/config.js`)
+const settings = require(`${process.cwd()}/src/config.js`)
 const Verifier = require('./InputMergePR')
 ;(async () => {
     const verify = new Verifier(Object.assign(settings))

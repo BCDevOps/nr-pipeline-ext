@@ -1,8 +1,8 @@
 'use strict'
 const expect = require('expect')
 // const sinon = require('sinon')
-const { SchemaCrawler, SCHEMA_CRAWLER_VERSION } = require('../lib/SchemaCrawler')
-const MavenRepository = require('../lib/MavenRepository')
+const { SchemaCrawler, SCHEMA_CRAWLER_VERSION } = require('../src/SchemaCrawler')
+const MavenRepository = require('../src/MavenRepository')
 
 const fakeConfig = {
     url: 'fakeUrl',

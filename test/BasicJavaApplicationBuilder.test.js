@@ -1,9 +1,9 @@
 'use strict'
 const sandbox = require('sinon').createSandbox()
 const { OpenShiftClientX } = require('@bcgov/pipeline-cli')
-const Jira = require('../lib/Jira')
-const Git = require('../lib/GitOperation')
-const BasicJavaApplicationBuilder = require('../lib/BasicJavaApplicationBuilder')
+const Jira = require('../src/Jira')
+const Git = require('../src/GitOperation')
+const BasicJavaApplicationBuilder = require('../src/BasicJavaApplicationBuilder')
 
 describe.skip('BasicJavaApplicationBuilder:', function() {
     this.timeout(50000)

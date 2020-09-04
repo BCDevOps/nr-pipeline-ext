@@ -1,9 +1,9 @@
 'use strict'
 const expect = require('expect')
 const sandbox = require('sinon').createSandbox()
-const { ENV } = require('../lib/constants')
+const { ENV } = require('../src/constants')
 const { OpenShiftClientX } = require('@bcgov/pipeline-cli')
-const BasicJavaApplicationClean = require('../lib/BasicJavaApplicationClean')
+const BasicJavaApplicationClean = require('../src/BasicJavaApplicationClean')
 
 describe('BasicJavaApplicationClean:', function() {
     this.timeout(50000)
@@ -553,7 +553,7 @@ const dcTestCopy = {
                         terminationMessagePolicy: 'File',
                         volumeMounts: [
                             {
-                                mountPath: '/usr/local/tomcat/webapps/pub#wiof/WEB-INF/lib/',
+                                mountPath: '/usr/local/tomcat/webapps/pub#wiof/WEB-INF/src/',
                                 name: 'newwebade',
                             },
                             {
@@ -632,7 +632,7 @@ const dcTestCopy = {
                         command: [
                             'bash',
                             '-c',
-                            'cp /usr/local/tomcat/webapps/pub#wiof/WEB-INF/lib/*.jar /newwebade \u0026\u0026 cp /webade/* /newwebade \u0026\u0026 cp -r /usr/local/tomcat/webapps/pub#wiof/WEB-INF/classes/* /classes \u0026\u0026 cp /webade-properties/* /classes',
+                            'cp /usr/local/tomcat/webapps/pub#wiof/WEB-INF/src/*.jar /newwebade \u0026\u0026 cp /webade/* /newwebade \u0026\u0026 cp -r /usr/local/tomcat/webapps/pub#wiof/WEB-INF/classes/* /classes \u0026\u0026 cp /webade-properties/* /classes',
                         ],
                         image:
                             'docker-registry.default.svc:5000/wp9gel-dev/wiof@sha256:48d7cfd66a22229b796f9881ff8c53fd0069a7d1e457739e4b0ba86ed5ca64fe',

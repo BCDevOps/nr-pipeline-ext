@@ -112,13 +112,13 @@ module.exports = class {
                 for (const val in answers) {
                     if (val === 'dev') {
                         this.__replaceFileContent(
-                            `${this.cwd}/.pipeline/lib/config.js`,
+                            `${this.cwd}/.pipeline/src/config.js`,
                             "dlvr: ''",
                             `dlvr: '${answers[val]}'`
                         )
                     } else if (val === 'name') {
                         this.__replaceFileContent(
-                            `${this.cwd}/.pipeline/lib/config.js`,
+                            `${this.cwd}/.pipeline/src/config.js`,
                             "const name = ''",
                             `const name = '${answers[val]}'`
                         )
@@ -133,19 +133,19 @@ module.exports = class {
                             routePath = `int/${answers.name}`
                         }
                         this.__replaceFileContent(
-                            `${this.cwd}/.pipeline/lib/config.js`,
+                            `${this.cwd}/.pipeline/src/config.js`,
                             "WEBAPP_NAME: ''",
                             `WEBAPP_NAME: '${webapp}'`
                         )
                         this.__replaceFileContent(
-                            `${this.cwd}/.pipeline/lib/config.js`,
+                            `${this.cwd}/.pipeline/src/config.js`,
                             "const routePath = ''",
                             `const routePath = '${routePath}'`
                         )
                         continue
                     }
                     this.__replaceFileContent(
-                        `${this.cwd}/.pipeline/lib/config.js`,
+                        `${this.cwd}/.pipeline/src/config.js`,
                         `${val}: ''`,
                         `${val}: '${answers[val]}'`
                     )
@@ -165,9 +165,9 @@ module.exports = class {
                     gitOwner = gitUrl.split('/')[4]
                     gitRepo = gitUrl.split('/')[5].split('.')[0]
                 }
-                this.__replaceFileContent(`${this.cwd}/.pipeline/lib/config.js`, "owner: ''", `owner: '${gitOwner}'`)
+                this.__replaceFileContent(`${this.cwd}/.pipeline/src/config.js`, "owner: ''", `owner: '${gitOwner}'`)
                 this.__replaceFileContent(
-                    `${this.cwd}/.pipeline/lib/config.js`,
+                    `${this.cwd}/.pipeline/src/config.js`,
                     "repository: ''",
                     `repository: '${gitRepo}'`
                 )
@@ -187,21 +187,21 @@ module.exports = class {
                     if (pomInfo[i].includes('artifactId')) {
                         artifactId = pomInfo[i].split('>')[1].split('<')[0]
                         this.__replaceFileContent(
-                            `${this.cwd}/.pipeline/lib/config.js`,
+                            `${this.cwd}/.pipeline/src/config.js`,
                             "ARTIFACT_ID: ''",
                             `ARTIFACT_ID: '${artifactId}'`
                         )
                     } else if (pomInfo[i].includes('packaging')) {
                         packaging = pomInfo[i].split('>')[1].split('<')[0]
                         this.__replaceFileContent(
-                            `${this.cwd}/.pipeline/lib/config.js`,
+                            `${this.cwd}/.pipeline/src/config.js`,
                             "PACKAGING_TYPE: ''",
                             `PACKAGING_TYPE: '${packaging}'`
                         )
                     } else if (pomInfo[i].includes('version')) {
                         artifactVersion = pomInfo[i].split('>')[1].split('<')[0]
                         this.__replaceFileContent(
-                            `${this.cwd}/.pipeline/lib/config.js`,
+                            `${this.cwd}/.pipeline/src/config.js`,
                             "ARTIFACT_VERSION: ''",
                             `ARTIFACT_VERSION: '${artifactVersion}'`
                         )

@@ -1,14 +1,14 @@
 'use strict'
-const Jira = require('../lib/Jira')
+const Jira = require('../src/Jira')
 const expect = require('expect')
 const toMatchSnapshot = require('./expect-mocha-snapshot')
 expect.extend({ toMatchSnapshot })
 const sinon = require('sinon')
 const nock = require('nock')
 const sandbox = sinon.createSandbox()
-const { ENV, ISSUE_LINK_TYPE_NAME, VERIFY_STATUS, REASON } = require('../lib/constants')
-const { previousEnv } = require('../lib/util-functions')
-const Verifier = require('../lib/InputDeployerVerify')
+const { ENV, ISSUE_LINK_TYPE_NAME, VERIFY_STATUS, REASON } = require('../src/constants')
+const { previousEnv } = require('../src/util-functions')
+const Verifier = require('../src/InputDeployerVerify')
 const { JiraMock, RFCWORKFLOW, RFDWORKFLOW } = require('./JiraMock')
 
 describe('RFC Verification:', function() {

@@ -1,6 +1,6 @@
 'use strict'
 const expect = require('expect')
-const Liquibase = require('../lib/Liquibase')
+const Liquibase = require('../src/Liquibase')
 
 describe.skip('liquibase module', function() {
     this.timeout(50000)

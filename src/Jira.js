@@ -4,7 +4,7 @@
 'use strict'
 const JiraClient = require('jira-connector')
 const CONST = require('./constants')
-const RFDWOKFLOW = require('../lib/JiraRfdWorkflowV1.2')
+const RFDWOKFLOW = require('./JiraRfdWorkflowV1.2')
 
 const JIRA_ENV_REVIEWER = CONST.JIRA_ENV_REVIEWER
 const ISSUE_TYPE_CODE = CONST.ISSUE_TYPE_CODE

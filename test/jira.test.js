@@ -1,5 +1,5 @@
 'use strict'
-const Jira = require('../lib/Jira')
+const Jira = require('../src/Jira')
 const sinon = require('sinon')
 const sandbox = sinon.createSandbox()
 const nock = require('nock')
@@ -7,9 +7,9 @@ const expect = require('expect')
 const toMatchSnapshot = require('./expect-mocha-snapshot')
 expect.extend({ toMatchSnapshot })
 
-const RFDWORKFLOW = require('../lib/JiraRfdWorkflowV1.2')
-const RFCWORKFLOW = require('../lib/JiraRfcWorkflowV2.0.0')
-const CONST = require('../lib/constants')
+const RFDWORKFLOW = require('../src/JiraRfdWorkflowV1.2')
+const RFCWORKFLOW = require('../src/JiraRfcWorkflowV2.0.0')
+const CONST = require('../src/constants')
 const { JiraMock } = require('./JiraMock')
 
 const JIRA_SETTINGS = {

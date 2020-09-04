@@ -1,6 +1,6 @@
 const BasicJavaApplicationBuilder = require('./BasicJavaApplicationBuilder.js')
 const path = require('path')
-const settings = require(`${process.cwd()}/lib/config.js`)
+const settings = require(`${process.cwd()}/src/config.js`)
 
 const MyBuilder = class extends BasicJavaApplicationBuilder {
     processTemplates(oc) {
