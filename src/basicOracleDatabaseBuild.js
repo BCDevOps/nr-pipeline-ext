@@ -1,7 +1,7 @@
 const Jira = require('./Jira')
 const config = require(`${process.cwd()}/lib/config.js`)
 const env = 'build'
-const Git = require('../lib/GitOperation')
+const Git = require('./GitOperation')
 
 // Jira config
 

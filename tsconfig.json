@@ -1,1 +1,31 @@
-jsconfig.json
+{
+  "compilerOptions": {
+    "outDir": "lib",
+    "checkJs": true,
+    "allowJs": true,
+    "target": "es5",
+    "module": "CommonJS",
+    "sourceMap": true,
+    "strict": true,
+    "alwaysStrict": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": true,
+    "declaration": true,
+    "noImplicitAny": false
+  },
+  "types": [
+    "node"
+  ],
+  "include": ["./src/**/*"],
+  "exclude": [
+    "node_modules",
+    "**/node_modules/*",
+    "lib",
+    "coverage",
+    "config",
+    ".nyc_output",
+    "test",
+    "util"
+  ]
+}
