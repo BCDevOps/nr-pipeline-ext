@@ -1,7 +1,7 @@
 'use strict'
 const expect = require('expect')
 // const sinon = require('sinon')
-const ManageDaReview = require('../lib/manage-da-review')
+const ManageDaReview = require('../src/manage-da-review')
 
 // system test, requires credential from "./idir.local.json" and "./db.local.json" (create one if not exists)
 describe.skip('DA Review [@slow]', function() {

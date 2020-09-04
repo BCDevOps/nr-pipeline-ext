@@ -1,6 +1,6 @@
 'use strict'
 const expect = require('expect')
-const MavenRepository = require('../lib/MavenRepository')
+const MavenRepository = require('../src/MavenRepository')
 const fs = require('fs')
 
 describe.skip('MavenRepository', function() {

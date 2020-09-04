@@ -4,7 +4,7 @@ const fs = require('fs')
 const path = require('path')
 // TOFIX: never used?
 // const { OpenShiftClient } = require('@bcgov/pipeline-cli')
-const config = require(`${process.cwd()}/lib/config.js`)
+const config = require(`${process.cwd()}/src/config.js`)
 const { childProcess } = require('./util-functions')
 const CONST = require('./constants')
 

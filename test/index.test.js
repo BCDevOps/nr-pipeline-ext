@@ -1,7 +1,7 @@
 'use strict'
 const expect = require('expect')
 
-const Jira = require('../lib/Jira')
+const Jira = require('../src/Jira')
 const sinon = require('sinon')
 const sandbox = sinon.createSandbox()
 

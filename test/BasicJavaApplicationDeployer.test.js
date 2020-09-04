@@ -2,9 +2,9 @@
 const expect = require('expect')
 const sandbox = require('sinon').createSandbox()
 const { OpenShiftClientX } = require('@bcgov/pipeline-cli')
-const Jira = require('../lib/Jira')
-const Verifier = require('../lib/InputDeployerVerify')
-const BasicJavaApplicationDeployer = require('../lib/BasicJavaApplicationDeployer')
+const Jira = require('../src/Jira')
+const Verifier = require('../src/InputDeployerVerify')
+const BasicJavaApplicationDeployer = require('../src/BasicJavaApplicationDeployer')
 
 describe('BasicJavaApplicationDeployer:', function() {
     this.timeout(50000)

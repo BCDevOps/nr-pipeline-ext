@@ -1,7 +1,7 @@
 'use strict'
 const expect = require('expect')
-const { previousEnv, childProcess } = require('../lib/util-functions')
-const { ENV } = require('../lib/constants')
+const { previousEnv, childProcess } = require('../src/util-functions')
+const { ENV } = require('../src/constants')
 
 describe('previousEnv:', function() {
     it('Get previous stage based on env', function() {
