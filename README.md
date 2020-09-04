@@ -100,5 +100,7 @@ How to use :
 
 18. mergePR.js: This script runs when a bitbucket Pull Request is merged, deleted or declined and cleans openshift objects and deletes the source branch.
 
+19. BasicFunctionTester.js : This is a class which can be called using command npx @bgov/nrdk functionaltest. The script does not need any specific file located in the .pipeline folder but expects a folder named 'functional-testing' containing all the functional tests for the project.
+
 
 Scripts not mentioned in this README are still under construction and not ready to be used.
