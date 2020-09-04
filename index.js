@@ -10,6 +10,7 @@ const BasicJavaApplicationBuilder = require('./lib/BasicJavaApplicationBuilder')
 const BasicJavaApplicationDeployer = require('./lib/BasicJavaApplicationDeployer')
 const CreateChangesetUpdateChangelog = require('./lib/CreateChangesetUpdateChangelog')
 const BasicJavaApplicationClean = require('./lib/BasicJavaApplicationClean')
+const BasicFunctionalTester = require('./lib/BasicFunctionalTester')
 const Initializer = require('./lib/InitializeJavaAppClass')
 const RfcWorkflow = require('./lib/JiraRfcWorkflowV2.0.0')
 const RfdWorkflow = require('./lib/JiraRfdWorkflowV1.2')
@@ -25,6 +26,7 @@ module.exports = {
     BasicJavaApplicationDeployer,
     CreateChangesetUpdateChangelog,
     BasicJavaApplicationClean,
+    BasicFunctionalTester,
     InputDeployerVerify,
     Initializer,
     RfcWorkflow,
