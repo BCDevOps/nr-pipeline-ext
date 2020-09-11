@@ -7,11 +7,11 @@
    },
    "main": "index.js",
    "scripts": {
-      "test": "nyc --reporter=text mocha",
+      "test": "mocha --forbid-only --grep @slow --invert && tsc --noEmit -p .",
       "coverage": "nyc --reporter=html mocha --reporter mochawesome",
       "version": "echo \"node@$(node --version) ($(which node))\" && echo \"npm@$(npm --version) ($(which npm))\" && npm ls",
       "test:watch:single": "mocha -R list -w $1",
-      "test:ci": "nyc --reporter=text mocha --grep @slow --invert && tsc --noEmit -p .",
+      "test:ci": "nyc --reporter=text mocha --forbid-only --grep @slow --invert && tsc --noEmit -p .",
       "test:ci:html": "nyc --reporter=html mocha --grep @slow --invert",
       "test:watch:ci": "mocha -w --grep @slow --invert",
       "mocha": "mocha",
@@ -20,7 +20,7 @@
       "eslint": "eslint .",
       "prettier:format:all": "prettier --write '**/*.js'",
       "prettier": "prettier  '**/*.js' --check",
-      "gen-workflows": "node util/create-jira-workflow-class.js lib/assets/RFC-Workflow-v1.2.1.xml lib/JiraRfcWorkflowV1.2.1.js && node util/create-jira-workflow-class.js lib/assets/RFD-Workflow-V1.2.xml lib/JiraRfdWorkflowV1.2.js && node util/create-jira-workflow-class.js lib/assets/RFC-Workflow-v2.0.0.xml lib/JiraRfcWorkflowV2.0.0.js",
+      "gen-workflows": "node util/create-jira-workflow-class.js lib/assets/RFC-Workflow-v1.2.1.xml lib/JiraRfcWorkflowV1.2.1.js && node util/create-jira-workflow-class.js lib/assets/RFD-Workflow-V1.2.2.xml lib/JiraRfdWorkflowV1.2.2.js && node util/create-jira-workflow-class.js lib/assets/RFC-Workflow-v2.0.0.xml lib/JiraRfcWorkflowV2.0.0.js",
       "tsc": "tsc --noEmit -p ."
    },
    "repository": {

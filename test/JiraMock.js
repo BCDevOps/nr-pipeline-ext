@@ -1,7 +1,7 @@
 const nock = require('nock')
 
 const RFCWORKFLOW = require('../lib/JiraRfcWorkflowV2.0.0')
-const RFDWORKFLOW = require('../lib/JiraRfdWorkflowV1.2')
+const RFDWORKFLOW = require('../lib/JiraRfdWorkflowV1.2.2')
 const WORKFLOWS = { RFD: RFDWORKFLOW, RFC: RFCWORKFLOW, 'RFD-subtask': RFDWORKFLOW }
 const merge = require('lodash.merge')
 

@@ -5,19 +5,17 @@ const Jira = require('../lib/Jira')
 const Git = require('../lib/GitOperation')
 const BasicJavaApplicationBuilder = require('../lib/BasicJavaApplicationBuilder')
 
-describe.skip('BasicJavaApplicationBuilder:', function() {
+describe('BasicJavaApplicationBuilder:', function() {
     this.timeout(50000)
 
     let ocApplyRecommendedLabelsStub
     let ocApplyAndBuildStub
-    let gitVerifyStub
     let jiraCreateRfdStub
 
     // stubing
     this.beforeEach(function() {
         ocApplyRecommendedLabelsStub = sandbox.stub(OpenShiftClientX.prototype, 'applyRecommendedLabels')
         ocApplyAndBuildStub = sandbox.stub(OpenShiftClientX.prototype, 'applyAndBuild')
-        gitVerifyStub = sandbox.stub(Git.prototype, 'verify')
         jiraCreateRfdStub = sandbox.stub(Jira.prototype, 'createRFD')
     })
 
@@ -32,8 +30,8 @@ describe.skip('BasicJavaApplicationBuilder:', function() {
             settingsStub.options.git.change.target = 'master'
             const builder = new BasicJavaApplicationBuilder(settingsStub)
             const processedTemplateStub = { processTemplates: 'myTemplate' }
+            sandbox.stub(Git.prototype, 'isTargetBranchOutofSync').returns(Promise.resolve(false))
             sandbox.stub(builder, 'processTemplates').callsFake(() => processedTemplateStub)
-            gitVerifyStub.returns(Promise.resolve('True')) // git verify passed.
 
             // Act
             await builder.build()
@@ -41,15 +39,6 @@ describe.skip('BasicJavaApplicationBuilder:', function() {
             // Verify
             sandbox.assert.calledOnce(builder.processTemplates)
             sandbox.assert.calledOnce(jiraCreateRfdStub)
-            sandbox.assert.calledOnce(gitVerifyStub)
-            sandbox.assert.calledWith(
-                gitVerifyStub,
-                settingsStub.options.git.branch.merge,
-                settingsStub.options.git.change.target,
-                settingsStub.phases.build.credentials.idir.user,
-                settingsStub.phases.build.credentials.idir.pass,
-                settingsStub.options.git.url
-            )
             sandbox.assert.calledOnce(ocApplyRecommendedLabelsStub)
             sandbox.assert.calledWith(
                 ocApplyRecommendedLabelsStub,
@@ -65,14 +54,14 @@ describe.skip('BasicJavaApplicationBuilder:', function() {
     })
 
     context("When target is not a 'master'...", function() {
-        it.skip("when passing git 'verify'...it should applyAndBuild using oc", async function() {
+        it("when passing git 'verify'...it should applyAndBuild using oc", async function() {
             // Arrange
             const settingsStub = getDefaultSettings()
             settingsStub.options.git.change.target = 'NOT_A_Master_Branch'
             const builder = new BasicJavaApplicationBuilder(settingsStub)
-            const processedTemplateStub = { processTemplates: 'myTemplate' }
+            const processedTemplateStub = []
+            sandbox.stub(Git.prototype, 'isTargetBranchOutofSync').returns(Promise.resolve(false))
             sandbox.stub(builder, 'processTemplates').callsFake(() => processedTemplateStub)
-            gitVerifyStub.returns(Promise.resolve('True')) // git verify passed.
 
             // Act
             await builder.build()
@@ -80,15 +69,6 @@ describe.skip('BasicJavaApplicationBuilder:', function() {
             // Verify
             sandbox.assert.calledOnce(builder.processTemplates)
             sandbox.assert.notCalled(jiraCreateRfdStub)
-            sandbox.assert.calledOnce(gitVerifyStub)
-            sandbox.assert.calledWith(
-                gitVerifyStub,
-                settingsStub.options.git.branch.merge,
-                settingsStub.options.git.change.target,
-                settingsStub.phases.build.credentials.idir.user,
-                settingsStub.phases.build.credentials.idir.pass,
-                settingsStub.options.git.url
-            )
             sandbox.assert.calledOnce(ocApplyRecommendedLabelsStub)
             sandbox.assert.calledWith(
                 ocApplyRecommendedLabelsStub,
@@ -111,7 +91,6 @@ describe.skip('BasicJavaApplicationBuilder:', function() {
             const builder = new BasicJavaApplicationBuilder(settingsStub)
             const processedTemplateStub = { processTemplates: 'myTemplate' }
             sandbox.stub(builder, 'processTemplates').callsFake(() => processedTemplateStub)
-            gitVerifyStub.returns(Promise.resolve('True')) // git verify passed.
 
             // Act
             await builder.build()
@@ -130,7 +109,6 @@ describe.skip('BasicJavaApplicationBuilder:', function() {
             const builder = new BasicJavaApplicationBuilder(settingsStub)
             const processedTemplateStub = { processTemplates: 'myTemplate' }
             sandbox.stub(builder, 'processTemplates').callsFake(() => processedTemplateStub)
-            gitVerifyStub.returns(Promise.resolve('True')) // git verify passed.
 
             // Act
             await builder.build()

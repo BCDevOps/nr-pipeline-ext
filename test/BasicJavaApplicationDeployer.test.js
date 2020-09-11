@@ -50,7 +50,7 @@ describe('BasicJavaApplicationDeployer:', function() {
     })
 
     context("When 'CD' deployment ...", function() {
-        it.only('When JIRA verify conditon pass, do RFD transition in its env then deploy...', async function() {
+        it('When JIRA verify conditon pass, do RFD transition in its env then deploy...', async function() {
             // Arrange
             const settingsStub = getDefaultSettings()
             settingsStub.options.env = 'test'

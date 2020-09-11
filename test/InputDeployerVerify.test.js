@@ -589,21 +589,22 @@ describe('obtainCurrentRfcRfdContext:', function() {
         it("At 'dlvr' env, With rfc/rfd issues can be found, returns Rfc/Rfd context for caller function", async function() {
             // Arrange
             const rfcIssueKeyStub = 'MyRFCissue-99'
-            const rfcIssueStub = getDefaultRfcIssue()
-
+            const rfcIssueStub = require('lodash.merge')(getDefaultRfcIssue(), {
+                key: rfcIssueKeyStub,
+                fields: { issuetype: { name: 'RFC' } },
+            })
+            const issues = {}
+            issues[RFD_ISSUE_KEY_DLVR_STUB] = getDefaultRfdIssueInfo(RFD_ISSUE_KEY_DLVR_STUB)
+            issues[RFD_ISSUE_KEY_TEST_STUB] = getDefaultRfdIssueInfo(RFD_ISSUE_KEY_TEST_STUB)
+            issues[RFD_ISSUE_KEY_TEST_BUSINESS_STUB] = getDefaultRfdIssueInfo(RFD_ISSUE_KEY_TEST_BUSINESS_STUB)
+            issues[RFD_ISSUE_KEY_PROD_STUB] = getDefaultRfdIssueInfo(RFD_ISSUE_KEY_PROD_STUB)
             jiraClientStub.retrieveRfcIssueInfo.resolves(rfcIssueStub)
-            jiraClientStub.getIssue
-                .withArgs(RFD_ISSUE_KEY_DLVR_STUB)
-                .resolves(getDefaultRfdIssueInfo(RFD_ISSUE_KEY_DLVR_STUB))
-            jiraClientStub.getIssue
-                .withArgs(RFD_ISSUE_KEY_TEST_STUB)
-                .resolves(getDefaultRfdIssueInfo(RFD_ISSUE_KEY_TEST_STUB))
+            jiraClientStub.getIssue.withArgs(RFD_ISSUE_KEY_DLVR_STUB).resolves(issues[RFD_ISSUE_KEY_DLVR_STUB])
+            jiraClientStub.getIssue.withArgs(RFD_ISSUE_KEY_TEST_STUB).resolves(issues[RFD_ISSUE_KEY_TEST_STUB])
             jiraClientStub.getIssue
                 .withArgs(RFD_ISSUE_KEY_TEST_BUSINESS_STUB)
-                .resolves(getDefaultRfdIssueInfo(RFD_ISSUE_KEY_TEST_BUSINESS_STUB))
-            jiraClientStub.getIssue
-                .withArgs(RFD_ISSUE_KEY_PROD_STUB)
-                .resolves(getDefaultRfdIssueInfo(RFD_ISSUE_KEY_PROD_STUB))
+                .resolves(issues[RFD_ISSUE_KEY_TEST_BUSINESS_STUB])
+            jiraClientStub.getIssue.withArgs(RFD_ISSUE_KEY_PROD_STUB).resolves(issues[RFD_ISSUE_KEY_PROD_STUB])
 
             // Act
             const env = 'dlvr'
@@ -640,7 +641,10 @@ describe('obtainCurrentRfcRfdContext:', function() {
         it("At 'test' env, With rfc/rfd issues can be found, returns Rfc/Rfd context for caller function", async function() {
             // Arrange
             const rfcIssueKeyStub = 'MyRFCissue-99'
-            const rfcIssueStub = getDefaultRfcIssue()
+            const rfcIssueStub = require('lodash.merge')(getDefaultRfcIssue(), {
+                key: rfcIssueKeyStub,
+                fields: { issuetype: { name: 'RFC' } },
+            })
 
             jiraClientStub.retrieveRfcIssueInfo.resolves(rfcIssueStub)
             jiraClientStub.getIssue
@@ -717,6 +721,7 @@ function getDefaultRfdIssueInfo(issueKey) {
                 name: '',
             },
             labels: '',
+            issuetype: { name: 'RFD' },
         },
     }
 
@@ -727,7 +732,7 @@ function getDefaultRfdIssueInfo(issueKey) {
     } else if (rand1 >= 0.3 && rand1 < 0.7) {
         randomRfdStatus = RFDWORKFLOW.STATUS_APPROVED.name
     } else {
-        randomRfdStatus = 'Some Other Status'
+        randomRfdStatus = RFDWORKFLOW.STATUS_RESOLVED.name
     }
 
     // constructing rfdIssue status, customfield.
