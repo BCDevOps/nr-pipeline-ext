@@ -2,7 +2,7 @@
 const Jira = require('./Jira')
 const { ISSUE_LINK_TYPE_NAME, VERIFY_STATUS, REASON } = require('./constants')
 const RFDWOKFLOW = require('./JiraRfdWorkflowV1.2')
-const RFCWORKFLOW = require('./JiraRfcWorkflowV2.0.0')
+const RFCWORKFLOW = require('./JiraRfcWorkflowV2.0.0.ts')
 
 module.exports = class {
     constructor(settings) {
