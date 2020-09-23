@@ -13,7 +13,7 @@ const BasicJavaApplicationClean = require('./lib/BasicJavaApplicationClean')
 const BasicFunctionalTester = require('./lib/BasicFunctionalTester')
 const Initializer = require('./lib/InitializeJavaAppClass')
 const RfcWorkflow = require('./lib/JiraRfcWorkflowV2.0.0')
-const RfdWorkflow = require('./lib/JiraRfdWorkflowV1.2')
+const RfdWorkflow = require('./lib/JiraRfdWorkflowV1.2.2')
 
 module.exports = {
     Jira,
