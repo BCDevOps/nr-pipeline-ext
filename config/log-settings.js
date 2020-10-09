@@ -11,10 +11,6 @@ const logSettings = {
     winston: {
         defaultLogConfig: {
             transports: [
-                new transports.File({
-                    level: 'error',
-                    filename: path.join(__dirname, '..', 'logs', 'trace.log'),
-                }),
                 new transports.Console({
                     level: 'debug',
                     // @ts-ignore
