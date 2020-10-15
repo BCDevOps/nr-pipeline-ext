@@ -52,7 +52,7 @@
       "winston": "^3.3.3"
    },
    "peerDependencies": {
-      "@bcgov/pipeline-cli": "git+https://github.com/BCDevOps/pipeline-cli.git#release/v1.1",
+      "@bcgov/pipeline-cli": "^1.0.1-2",
       "rsync": "^0.6.1",
       "winston": "^3.2.1"
    },
