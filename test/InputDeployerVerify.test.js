@@ -868,7 +868,7 @@ function getDefaultSettings() {
             git: {
                 branch: {
                     name: 'master',
-                    merge: 'master',
+                    merge: 'MyRFCissue-99',
                     remote: 'master',
                 },
                 url: 'https://bwa.nrs.gov.bc.ca/int/stash/scm/siwe/siwe-siwe-ear.git',

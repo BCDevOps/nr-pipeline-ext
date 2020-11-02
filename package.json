@@ -1,6 +1,6 @@
 {
    "name": "@bcgov/nr-pipeline-ext",
-   "version": "0.1.0-rc.10",
+   "version": "0.1.0-rc.13",
    "description": "Natural Resource (IIT) Module/Extension for pipeline-cli",
    "engines": {
       "node": ">=12"

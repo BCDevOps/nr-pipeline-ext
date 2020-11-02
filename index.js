@@ -14,6 +14,7 @@ const BasicFunctionalTester = require('./lib/BasicFunctionalTester')
 const Initializer = require('./lib/InitializeJavaAppClass')
 const RfcWorkflow = require('./lib/JiraRfcWorkflowV2.0.0')
 const RfdWorkflow = require('./lib/JiraRfdWorkflowV1.2.2')
+const GitOperation = require('./lib/GitOperation')
 
 module.exports = {
     Jira,
@@ -31,4 +32,5 @@ module.exports = {
     Initializer,
     RfcWorkflow,
     RfdWorkflow,
+    GitOperation,
 }
